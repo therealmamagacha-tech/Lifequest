@@ -1,0 +1,232 @@
+/* --- POLICES & BASES --- */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Share+Tech+Mono&display=swap');
+
+/* Animation de la grille de fond */
+@keyframes gridMove { 
+    from { background-position: 0 0, 0 0, 0 0; } 
+    to { background-position: 0 0, 35px 35px, 35px 35px; } 
+}
+
+/* Pulsation néon du titre */
+@keyframes neonPulse { 
+    0%, 100% { text-shadow: 0 0 10px #00f2ff; border-color: #00f2ff; box-shadow: 0 0 5px rgba(0,242,255,0.2); } 
+    50% { text-shadow: 0 0 25px #00f2ff; border-color: #fff; box-shadow: 0 0 20px rgba(0,242,255,0.6); } 
+}
+
+/* Apparition en douceur */
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+/* --- STRUCTURE PRINCIPALE --- */
+.stApp {
+    background-color: #010409;
+    background-image: radial-gradient(circle at 50% 50%, rgba(0,242,255,0.15) 0%, transparent 80%),
+                      linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+    background-size: 100% 100%, 35px 35px, 35px 35px;
+    color: #00f2ff; 
+    font-family: 'Share Tech Mono', monospace;
+    animation: gridMove 4s linear infinite;
+}
+
+/* Sidebar & Header */
+[data-testid="stSidebar"] { 
+    background-color: #000000 !important; 
+    border-right: 2px solid #00f2ff; 
+}
+
+header, [data-testid="stHeader"] { 
+    background-color: rgba(0,0,0,0) !important; 
+}
+
+/* --- HUD & TEXTES --- */
+.main-title { 
+    font-family: 'Orbitron'; 
+    font-size: 4.5rem; 
+    text-align: center; 
+    margin: 0; 
+    animation: neonPulse 2s infinite ease-in-out; 
+}
+
+.manual-frame, .level-card { 
+    border: 2px solid #00f2ff; 
+    background-color: #000000 !important; 
+    text-align: center; 
+    animation: fadeIn 1s ease-out; 
+}
+
+.manual-frame { 
+    padding: 30px; 
+    margin: 20px auto; 
+    max-width: 800px; 
+    clip-path: polygon(5% 0%, 100% 0%, 100% 90%, 95% 100%, 0% 100%, 0% 10%); 
+}
+
+.level-card { 
+    padding: 15px; 
+    margin-bottom: 20px; 
+    clip-path: polygon(0 0, 100% 0, 100% 75%, 85% 100%, 0 100%); 
+}
+
+.level-val { 
+    font-family: 'Orbitron'; 
+    font-size: 2.5rem; 
+    font-weight: 900; 
+    color: #fff; 
+    text-shadow: 0 0 10px #00f2ff; 
+}
+
+/* --- BOITE DE MISSION IA --- */
+.mission-box { 
+    border-left: 5px solid #00f2ff; 
+    background: rgba(0, 242, 255, 0.1); 
+    padding: 20px; 
+    margin-top: 20px; 
+    font-family: 'Share Tech Mono'; 
+    animation: fadeIn 0.5s ease-in;
+    white-space: pre-wrap;
+    color: #fff;
+    box-shadow: inset 0 0 15px rgba(0, 242, 255, 0.1);
+}
+
+/* --- BOUTONS CYBERPUNK --- */
+div.stButton > button {
+    background: rgba(0, 20, 40, 0.9) !important; 
+    border: 2px solid #00f2ff !important;
+    color: #00f2ff !important; 
+    min-height: 3.25rem !important;
+    height: auto !important;
+    width: 100% !important;
+    font-family: 'Orbitron' !important; 
+    font-size: clamp(0.9rem, 1.8vw, 1.05rem) !important;
+    line-height: 1.2;
+    padding: 0.75rem 1rem !important;
+    clip-path: polygon(10% 0%, 100% 0%, 100% 85%, 90% 100%, 0% 100%, 0% 15%);
+    transition: transform 0.2s ease, box-shadow 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+}
+
+div.stButton > button:hover { 
+    background: #00f2ff !important; 
+    color: #000 !important; 
+    box-shadow: 0 0 24px rgba(0, 242, 255, 0.85) !important; 
+    transform: translateY(-2px); 
+}
+
+div.stButton > button:focus-visible {
+    outline: 2px solid #ffffff !important;
+    outline-offset: 2px;
+}
+
+/* Responsive: boutons encore plus stables sur mobile */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: clamp(2rem, 10vw, 3rem);
+    }
+
+    div.stButton > button {
+        min-height: 2.85rem !important;
+        font-size: 0.9rem !important;
+        padding: 0.65rem 0.85rem !important;
+        clip-path: polygon(6% 0%, 100% 0%, 100% 90%, 94% 100%, 0% 100%, 0% 10%);
+    }
+}
+
+/* --- MODULE DE SCANNER AVANCÉ (CORRIGÉ) --- */
+[data-testid="stImage"] {
+    position: relative;
+    padding: 12px;
+    background: rgba(0, 242, 255, 0.05);
+    /* Forme biseautée du réceptacle */
+    clip-path: polygon(15% 0, 100% 0, 100% 85%, 85% 100%, 0 100%, 0 15%);
+    border: 1px solid rgba(0, 242, 255, 0.3);
+    display: inline-block;
+}
+
+[data-testid="stImage"] img {
+    /* CORRECTION ICI : Le cadre néon est maintenant Cyan (#00f2ff) */
+    border: 2px solid #00f2ff !important;
+    box-shadow: 0 0 25px rgba(0, 242, 255, 0.6) !important;
+    border-radius: 4px;
+    /* Laisse Streamlit ou le style inline definir la largeur demandee */
+    width: auto !important;
+    max-width: none !important;
+    height: auto;
+    /* CORRECTION ICI : J'ai enlevé les filtres de couleur bizarres. L'image est normale, juste un peu plus nette. */
+    filter: brightness(1.05) contrast(1.1); 
+    transition: all 0.4s ease;
+}
+
+/* Effet au survol du scanneur */
+[data-testid="stImage"]:hover img {
+    /* Légère augmentation de la luminosité au survol pour le feedback */
+    filter: brightness(1.2) contrast(1.15);
+    transform: scale(1.03);
+    box-shadow: 0 0 35px rgba(0, 242, 255, 0.9) !important;
+}
+
+/* Signature technique sous l'image */
+[data-testid="stImage"]::after {
+    content: "SIGNAL_STRENGTH: NOMINAL // FEED_V2.0";
+    display: block;
+    font-size: 7px;
+    color: #00f2ff; /* Texte technique en Cyan */
+    text-align: center;
+    margin-top: 8px;
+    letter-spacing: 1px;
+    opacity: 0.7;
+}
+/* Styles pour les entrées de texte */
+.stTextInput input {
+    background-color: #000 !important;
+    color: #00f2ff !important;
+    border: 1px solid #00f2ff !important;
+    font-family: 'Share Tech Mono', monospace !important;
+}
+
+.login-frame {
+    border: 2px solid #00f2ff;
+    padding: 20px;
+    background: rgba(0, 242, 255, 0.05);
+    clip-path: polygon(5% 0%, 100% 0%, 100% 80%, 95% 100%, 0% 100%, 0% 20%);
+    margin: 20px auto;
+    max-width: 600px;
+    text-align: center;
+    color: #00f2ff;
+    font-family: 'Share Tech Mono', monospace;
+    box-shadow: inset 0 0 15px rgba(0, 242, 255, 0.2);
+}
+/* Personnalisation de la barre de progression Streamlit */
+div[data-baseweb="progress-bar"] > div {
+    background-color: #00f2ff !important;
+    box-shadow: 0 0 10px #00f2ff;
+}
+
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.avatar-card {
+    border: 1px solid #00f2ff;
+    background: rgba(0, 242, 255, 0.05);
+    padding: 15px;
+    text-align: center;
+    clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+}
+
+.locked {
+    filter: grayscale(1) blur(2px);
+    opacity: 0.5;
+    border: 1px dashed #ff0055 !important;
+}
+
+.avatar-name {
+    font-family: 'Orbitron';
+    font-size: 0.8rem;
+    margin-top: 10px;
+    color: #00f2ff;
+}
