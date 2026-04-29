@@ -49,15 +49,11 @@ def generer_agent(niveau):
 # 3. AFFICHAGE EN GRILLE
 st.write(f"### [ NIVEAU D'ACCÈS : {user_lvl} / 50 ]")
 
-# On crée 3 colonnes pour l'affichage
-cols = st.columns(3)
-
-for i in range(1, 51):
+def render_agent_card(i, col_slot):
     nom, img, pwr = generer_agent(i)
     is_unlocked = user_lvl >= i
-    
-    # On place dans la bonne colonne
-    with cols[(i-1) % 3]:
+
+    with col_slot:
         if is_unlocked:
             # --- AGENT DÉBLOQUÉ (Structure 100% conservée) ---
             st.markdown(f'''
@@ -70,7 +66,7 @@ for i in range(1, 51):
                     <p style="color: #00ff00; font-family: 'Share Tech Mono';">PWR: +{pwr}%</p>
                 </div>
             ''', unsafe_allow_html=True)
-            
+
             # Bouton pour sélectionner cet agent
             if st.button(f"SYNCHRONISER V{i}", key=f"btn_{i}", type="primary"):
                 st.session_state.active_agent = nom
@@ -87,6 +83,18 @@ for i in range(1, 51):
                 </div>
             ''', unsafe_allow_html=True)
             st.button(f"VERROUILLÉ V{i}", key=f"btn_locked_{i}", disabled=True)
+
+
+# Affiche d'abord les 5 premières cartes
+top_cols = st.columns(3)
+for idx, i in enumerate(range(1, 6)):
+    render_agent_card(i, top_cols[idx % 3])
+
+# Les cartes restantes sont pliées dans "Voir plus"
+with st.expander("Voir plus"):
+    more_cols = st.columns(3)
+    for idx, i in enumerate(range(6, 51)):
+        render_agent_card(i, more_cols[idx % 3])
 
 # 4. NAVIGATION
 if st.button("⬅️ TERMINAL"):
