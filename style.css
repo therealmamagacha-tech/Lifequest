@@ -295,3 +295,130 @@ div[data-baseweb="progress-bar"] > div {
     margin-top: 10px;
     color: #00f2ff;
 }
+
+/* --- ARCHIVES: CARTES AGENTS --- */
+.archive-card {
+    min-height: 380px;
+    margin-bottom: 20px;
+    padding: 18px 14px;
+    text-align: center;
+    border: 1px solid rgba(0, 242, 255, 0.35);
+    background: linear-gradient(180deg, rgba(0, 242, 255, 0.14), rgba(0, 12, 20, 0.72));
+    box-shadow: inset 0 0 18px rgba(0, 242, 255, 0.1), 0 0 12px rgba(0, 242, 255, 0.16);
+    backdrop-filter: blur(2px);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.archive-card--tilt-left {
+    transform: perspective(900px) rotateX(0.8deg) rotateY(-1.6deg);
+}
+
+.archive-card--tilt-right {
+    transform: perspective(900px) rotateX(0.8deg) rotateY(1.6deg);
+}
+
+.archive-card--unlocked:hover {
+    transform: perspective(900px) rotateX(0deg) rotateY(0deg) translateY(-4px);
+    border-color: rgba(0, 242, 255, 0.9);
+    box-shadow: inset 0 0 24px rgba(0, 242, 255, 0.15), 0 0 20px rgba(0, 242, 255, 0.35);
+}
+
+.archive-card--locked {
+    opacity: 0.42;
+    filter: grayscale(1);
+    background: linear-gradient(180deg, rgba(20, 30, 40, 0.4), rgba(5, 10, 14, 0.75));
+}
+
+.archive-card__id {
+    margin: 0;
+    font-size: 0.62rem;
+    color: rgba(0, 242, 255, 0.92);
+    letter-spacing: 0.7px;
+}
+
+.archive-card__portrait {
+    position: relative;
+    overflow: hidden;
+    width: 146px;
+    height: 146px;
+    margin: 18px auto 14px;
+    border: 1px solid rgba(0, 242, 255, 0.45);
+    background:
+        radial-gradient(circle at 50% 45%, rgba(0, 242, 255, 0.12), rgba(0, 10, 16, 0.82)),
+        linear-gradient(135deg, rgba(0, 242, 255, 0.09), rgba(0, 0, 0, 0));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 16px rgba(0, 242, 255, 0.2);
+}
+
+.archive-card__portrait img {
+    display: block;
+    margin: 0 auto;
+    object-position: center center;
+}
+
+.archive-card__portrait::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(
+        to bottom,
+        rgba(0, 242, 255, 0.14) 0px,
+        rgba(0, 242, 255, 0.14) 1px,
+        rgba(0, 0, 0, 0) 2px,
+        rgba(0, 0, 0, 0) 4px
+    );
+    opacity: 0.22;
+}
+
+.archive-card__name {
+    margin: 10px 0 8px;
+    font-family: 'Orbitron';
+    font-size: 0.95rem;
+    color: #d9fdff;
+    letter-spacing: 0.8px;
+}
+
+.archive-card__power {
+    display: inline-block;
+    margin: 0;
+    padding: 4px 10px;
+    border: 1px solid rgba(0, 255, 157, 0.5);
+    background: rgba(0, 255, 157, 0.08);
+    color: #8effca;
+    font-family: 'Share Tech Mono';
+    font-size: 0.78rem;
+}
+
+.archive-card__lock {
+    margin-top: 72px;
+    font-size: 2.4rem;
+    opacity: 0.9;
+}
+
+.archive-card__locked-text {
+    margin-top: 52px;
+    font-family: 'Orbitron';
+    font-size: 0.78rem;
+    color: rgba(220, 236, 246, 0.82);
+}
+
+@media (max-width: 768px) {
+    .archive-card {
+        min-height: 330px;
+        padding: 14px 10px;
+        transform: none;
+    }
+
+    .archive-card__portrait {
+        width: 126px;
+        height: 126px;
+        margin-top: 14px;
+    }
+
+    .archive-card__lock {
+        margin-top: 56px;
+    }
+}

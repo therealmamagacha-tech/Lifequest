@@ -52,18 +52,18 @@ st.write(f"### [ NIVEAU D'ACCÈS : {user_lvl} / 50 ]")
 def render_agent_card(i, col_slot):
     nom, img, pwr = generer_agent(i)
     is_unlocked = user_lvl >= i
+    tilt_class = "archive-card--tilt-right" if i % 2 else "archive-card--tilt-left"
 
     with col_slot:
         if is_unlocked:
-            # --- AGENT DÉBLOQUÉ (Structure 100% conservée) ---
+            # --- AGENT DÉBLOQUÉ ---
             st.markdown(f'''
-                <div class="mission-box" style="border-top: 2px solid #00f2ff; text-align: center; min-height: 380px; margin-bottom:20px;">
-                    <p style="font-size: 0.6rem; color: #00f2ff;">ID: {hashlib.md5(nom.encode()).hexdigest()[:8]}</p>
-                    <div style="background: rgba(0,242,255,0.05); padding: 10px; margin: 10px auto; width: 80px; border: 1px solid #00f2ff33; display: flex; align-items: center; justify-content: center;">
-                        <img src="{img}" style="width: 60px; height: 60px; image-rendering: pixelated; object-fit: contain;">
+                <div class="archive-card archive-card--unlocked {tilt_class}">
+                    <div class="archive-card__portrait">
+                        <img src="{img}" style="width: 124px; height: 124px; image-rendering: pixelated; object-fit: contain;">
                     </div>
-                    <h4 style="font-family: Orbitron; font-size: 0.8rem;">{nom}</h4>
-                    <p style="color: #00ff00; font-family: 'Share Tech Mono';">PWR: +{pwr}%</p>
+                    <h4 class="archive-card__name">{nom}</h4>
+                    <p class="archive-card__power">PWR: +{pwr}%</p>
                 </div>
             ''', unsafe_allow_html=True)
 
@@ -77,9 +77,9 @@ def render_agent_card(i, col_slot):
         else:
             # --- AGENT VERROUILLÉ ---
             st.markdown(f'''
-                <div class="mission-box" style="opacity: 0.2; filter: grayscale(1); text-align: center; min-height: 380px; margin-bottom:20px;">
-                    <div style="font-size: 2rem; margin-top: 60px;">🔒</div>
-                    <p style="font-family: Orbitron; margin-top: 40px; font-size:0.7rem;">REQUIS: LVL {i}</p>
+                <div class="archive-card archive-card--locked {tilt_class}">
+                    <div class="archive-card__lock">🔒</div>
+                    <p class="archive-card__locked-text">REQUIS: LVL {i}</p>
                 </div>
             ''', unsafe_allow_html=True)
             st.button(f"VERROUILLÉ V{i}", key=f"btn_locked_{i}", disabled=True)
