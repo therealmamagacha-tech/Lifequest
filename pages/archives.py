@@ -72,7 +72,7 @@ for i in range(1, 51):
             ''', unsafe_allow_html=True)
             
             # Bouton pour sélectionner cet agent
-            if st.button(f"SYNCHRONISER V{i}", key=f"btn_{i}"):
+            if st.button(f"SYNCHRONISER V{i}", key=f"btn_{i}", type="primary"):
                 st.session_state.active_agent = nom
                 st.session_state.active_puissance = pwr
                 st.session_state.active_img = img
@@ -86,6 +86,7 @@ for i in range(1, 51):
                     <p style="font-family: Orbitron; margin-top: 40px; font-size:0.7rem;">REQUIS: LVL {i}</p>
                 </div>
             ''', unsafe_allow_html=True)
+            st.button(f"VERROUILLÉ V{i}", key=f"btn_locked_{i}", disabled=True)
 
 # 4. NAVIGATION
 if st.button("⬅️ TERMINAL"):

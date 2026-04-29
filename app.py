@@ -88,10 +88,11 @@ if not st.session_state.logged_in:
         st.markdown('<div style="max-width:500px; margin:auto; padding:10px;">', unsafe_allow_html=True)
         user_input = st.text_input("🆔 AGENT_ID")
         pass_input = st.text_input("🔑 ACCESS_CODE", type="password")
+        can_auth = bool(user_input.strip()) and bool(pass_input)
         
         c1, c2 = st.columns(2)
         with c1:
-            if st.button("LOG_IN"):
+            if st.button("LOG_IN", type="primary", disabled=not can_auth):
                 data = auth.load_user(user_input, pass_input)
                 if data:
                     st.session_state.update(data)
@@ -101,15 +102,15 @@ if not st.session_state.logged_in:
                     st.rerun()
                 else:
                     st.error("ACCÈS REFUSÉ : Identifiants invalides.")
-       
-                if st.button("📂 ACCÉDER AUX ARCHIVES"):
-                         st.switch_page("pages/archives.py")
 
-                if st.button("⚔️ LANCER UNE MISSION"):
-                   st.switch_page("missions.py")
+            if st.button("📂 ACCÉDER AUX ARCHIVES", disabled=not st.session_state.get("logged_in", False)):
+                st.switch_page("pages/archives.py")
+
+            if st.button("⚔️ LANCER UNE MISSION", disabled=not st.session_state.get("logged_in", False)):
+                st.switch_page("missions.py")
         with c2:
             # Correction du bouton SIGN_UP pour une connexion instantanée
-            if st.button("SIGN_UP"):
+            if st.button("SIGN_UP", type="primary", disabled=not can_auth):
                 if len(user_input) > 2 and len(pass_input) > 3:
                     if auth.user_exists(user_input):
                         st.warning("AGENT DÉJÀ RÉPERTORIÉ.")
@@ -143,15 +144,17 @@ else:
         ''', unsafe_allow_html=True)
         st.write(f"PROGRESSION : {st.session_state.xp}/100 XP")
         st.progress(min(st.session_state.xp / 100, 1.0))
-        if st.button("📂 CONSULTER LES ARCHIVES"):
+        if st.button("📂 CONSULTER LES ARCHIVES", type="primary"):
             st.switch_page("pages/archives.py")
         st.markdown("---")
-        if st.button("🔌 DISCONNECT"):
+        st.caption("Zone critique")
+        if st.button("🔌 DISCONNECT", type="secondary"):
             sync_save()
             st.session_state.logged_in = False
             st.rerun()
             
-        if st.button("🔄 REBOOT HUB"):
+        can_reboot = st.session_state.mode is not None or st.session_state.mission_active or st.session_state.waiting_for_proof
+        if st.button("🔄 REBOOT HUB", type="secondary", disabled=not can_reboot):
             st.session_state.mode = None
             st.session_state.mission_active = False
             st.session_state.waiting_for_proof = False
@@ -163,32 +166,34 @@ else:
     # 1. CHOIX DU MODE
     if st.session_state.mode is None:
         st.markdown('''
-            <div class="manual-frame">
+            <div class="manual-frame panel-shell">
                 <h3>[ MANUAL_OVERRIDE ]</h3>
                 <p>Scannez une corvée ou une tâche pour générer une mission.</p>
             </div>
         ''', unsafe_allow_html=True)
+        st.markdown('<div class="mobile-cta">', unsafe_allow_html=True)
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("📷 OPTIC SCANNER"):
+            if st.button("📷 OPTIC SCANNER", type="primary"):
                 st.session_state.mode = "camera"
                 sync_save(); st.rerun()
         with col2:
-            if st.button("📁 DATA FEED"):
+            if st.button("📁 DATA FEED", type="primary"):
                 st.session_state.mode = "upload"
                 sync_save(); st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
     # 2. MISSION ACTIVE
     elif st.session_state.mission_active:
         st.markdown(f'''
-            <div class="mission-box">
+            <div class="mission-box panel-shell">
                 <h3 style="margin:0; color:#00f2ff; font-family:Orbitron;">> MISSION_DÉCRYPTÉE</h3>
                 <p style="color:#fff; margin-top:15px;">{st.session_state.mission_text}</p>
             </div>
         ''', unsafe_allow_html=True)
         
         if not st.session_state.waiting_for_proof:
-            if st.button("🛰️ SOUMETTRE PREUVE"):
+            if st.button("🛰️ SOUMETTRE PREUVE", type="primary"):
                 st.session_state.waiting_for_proof = True
                 st.rerun()
         else:
@@ -198,7 +203,7 @@ else:
             if proof:
                 img_p = Image.open(proof)
                 h_p = get_image_hash(img_p)
-                if st.button("⚡ ANALYSER L'INTÉGRITÉ"):
+                if st.button("⚡ ANALYSER L'INTÉGRITÉ", type="primary", disabled=proof is None):
                     if model is None:
                         st.error("IA indisponible: configure GEMINI_API_KEY dans .env.")
                         st.stop()
@@ -236,7 +241,7 @@ else:
                 st.warning("ANOMALIE : Donnée déjà traitée.")
             else:
                 st.image(img, width=400)
-                if st.button("⚡ GÉNÉRER OBJECTIF"):
+                if st.button("⚡ GÉNÉRER OBJECTIF", type="primary", disabled=source is None):
                     if model is None:
                         st.error("IA indisponible: configure GEMINI_API_KEY dans .env.")
                         st.stop()

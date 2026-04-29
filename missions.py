@@ -25,7 +25,7 @@ col1, col2 = st.columns([1, 1.5])
 with col1:
     # Rappel de l'agent actif dans une login-frame
     st.markdown(f'''
-        <div class="login-frame" style="text-align:center;">
+        <div class="login-frame panel-shell" style="text-align:center;">
             <p style="color:#00f2ff; font-size:0.8rem;">UNITÉ_EN_LIGNE</p>
             <img src="{agent_img}" style="width:80px; image-rendering:pixelated;">
             <h3 style="font-family:Orbitron; font-size:0.9rem;">{agent_nom}</h3>
@@ -36,7 +36,7 @@ with col1:
 with col2:
     # Détails de la mission dans une mission-box
     st.markdown('''
-        <div class="mission-box">
+        <div class="mission-box panel-shell">
             <h2 style="color:#ff0055; font-size:1.2rem; font-family:Orbitron;">SABOTAGE_RESEAU</h2>
             <p style="font-size:0.8rem;">Cible : Serveurs Arasaka. <br>Difficulté : <b>Niveau 40</b></p>
             <hr style="border:0.5px solid #333;">
@@ -49,11 +49,10 @@ with col2:
     if chances_succes > 98: chances_succes = 98 # Jamais 100% de sécurité !
 
     st.write(f"PROBABILITÉ DE RÉUSSITE : **{chances_succes}%**")
+    can_launch = agent_nom != "AUCUN_AGENT"
     
-    if st.button("LANCER L'INFILTRATION", use_container_width=True):
-        if agent_nom == "AUCUN_AGENT":
-            st.warning("⚠️ Sélectionnez un agent dans les ARCHIVES d'abord !")
-        else:
+    if st.button("LANCER L'INFILTRATION", use_container_width=True, type="primary", disabled=not can_launch):
+        if can_launch:
             barre = st.progress(0, text="Piratage en cours...")
             for percent_complete in range(100):
                 time.sleep(0.02) # Simule le temps de l'action
@@ -71,6 +70,8 @@ with col2:
                 st.write("Allez dans les ARCHIVES pour voir votre nouveau personnage !")
             else:
                 st.error("❌ ÉCHEC. L'agent a dû battre en retraite. Puissance insuffisante.")
+    if not can_launch:
+        st.caption("Sélectionne un agent dans les archives pour activer le lancement.")
 
 # Bouton de navigation
 st.markdown("<br>", unsafe_allow_html=True)
