@@ -302,6 +302,9 @@ div[data-baseweb="progress-bar"] > div {
     margin-bottom: 20px;
     padding: 18px 14px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     border: 1px solid rgba(0, 242, 255, 0.35);
     background: linear-gradient(180deg, rgba(0, 242, 255, 0.14), rgba(0, 12, 20, 0.72));
     box-shadow: inset 0 0 18px rgba(0, 242, 255, 0.1), 0 0 12px rgba(0, 242, 255, 0.16);
@@ -310,15 +313,15 @@ div[data-baseweb="progress-bar"] > div {
 }
 
 .archive-card--tilt-left {
-    transform: perspective(900px) rotateX(0.8deg) rotateY(-1.6deg);
+    transform: none;
 }
 
 .archive-card--tilt-right {
-    transform: perspective(900px) rotateX(0.8deg) rotateY(1.6deg);
+    transform: none;
 }
 
 .archive-card--unlocked:hover {
-    transform: perspective(900px) rotateX(0deg) rotateY(0deg) translateY(-4px);
+    transform: translateY(-4px);
     border-color: rgba(0, 242, 255, 0.9);
     box-shadow: inset 0 0 24px rgba(0, 242, 255, 0.15), 0 0 20px rgba(0, 242, 255, 0.35);
 }
@@ -342,6 +345,8 @@ div[data-baseweb="progress-bar"] > div {
     width: 146px;
     height: 146px;
     margin: 18px auto 14px;
+    left: auto;
+    transform: none;
     border: 1px solid rgba(0, 242, 255, 0.45);
     background:
         radial-gradient(circle at 50% 45%, rgba(0, 242, 255, 0.12), rgba(0, 10, 16, 0.82)),
@@ -416,6 +421,8 @@ div[data-baseweb="progress-bar"] > div {
         width: 126px;
         height: 126px;
         margin-top: 14px;
+        left: auto;
+        transform: none;
     }
 
     .archive-card__lock {
