@@ -1,0 +1,102 @@
+import streamlit as st
+import hashlib
+import base64  # AJOUTÉ pour lire tes images locales
+import os      # AJOUTÉ pour vérifier tes fichiers
+
+# 1. STYLE ET CONFIG
+try:
+    with open("style.css", "r") as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+except FileNotFoundError:
+    st.error("ERREUR : Fichier style.css introuvable.")
+except OSError as e:
+    st.error(f"ERREUR : Impossible de charger style.css ({e}).")
+
+# On récupère le niveau actuel du joueur (app.py l'initialise à 1)
+user_lvl = st.session_state.get('lvl', 1)
+
+st.markdown('<h1 class="main-title">ESCOUADE</h1>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:monospace; font-size:0.8rem; color:#00f2ff;">[ NIVEAU D\'ACCÈS : {user_lvl} / 50 ] — Unités déployées disponibles</p>', unsafe_allow_html=True)
+
+# --- FONCTION POUR CONVERTIR TES IMAGES PERSO EN TEXTE LISIBLE PAR LE HTML ---
+def get_base64_image(image_path):
+    try:
+        if os.path.exists(image_path):
+            with open(image_path, "rb") as img_file:
+                return f"data:image/png;base64,{base64.b64encode(img_file.read()).decode()}"
+        return None
+    except OSError:
+        return None
+
+# 2. FONCTION DU GÉNÉRATEUR (Modifiée pour tes images locales)
+def generer_agent(niveau):
+    # TA LIGNE D'IMAGE : cherche "Perso 1.png", "Perso 2.png", etc. dans le dossier assets
+    chemin_local = f"assets/Perso {niveau}.png"
+    
+    img_data = get_base64_image(chemin_local)
+    
+    # Si l'image n'est pas trouvée sur ton PC, on met une image de secours vide
+    if not img_data:
+        img_data = "https://via.placeholder.com/60/000000/00f2ff?text=NOT_FOUND"
+    
+    # Calcul de la puissance (10 de base + 2 par niveau)
+    puissance = 10 + (niveau * 2)
+    
+    # Nom automatique
+    nom = f"UNIT_NX_{niveau}"
+    
+    return nom, img_data, puissance
+
+# 3. AFFICHAGE EN GRILLE
+
+
+def render_agent_card(i, col_slot):
+    nom, img, pwr = generer_agent(i)
+    is_unlocked = user_lvl >= i
+    tilt_class = "archive-card--tilt-right" if i % 2 else "archive-card--tilt-left"
+
+    with col_slot:
+        if is_unlocked:
+            # --- AGENT DÉBLOQUÉ ---
+            st.markdown(f'''
+                <div class="archive-card archive-card--unlocked {tilt_class}">
+                    <div class="archive-card__portrait">
+                        <img src="{img}" style="width: 124px; height: 124px; image-rendering: pixelated; object-fit: contain;">
+                    </div>
+                    <h4 class="archive-card__name">{nom}</h4>
+                    <p class="archive-card__power">PWR: +{pwr}%</p>
+                </div>
+            ''', unsafe_allow_html=True)
+
+            # Bouton pour sélectionner cet agent
+            if st.button(f"▶ DÉPLOYER V{i}", key=f"btn_{i}", type="primary"):
+                st.session_state.active_agent = nom
+                st.session_state.active_puissance = pwr
+                st.session_state.active_img = img
+                st.success(f"UNITÉ {nom} DÉPLOYÉE — Liaison établie.")
+                st.rerun()
+        else:
+            # --- AGENT VERROUILLÉ ---
+            st.markdown(f'''
+                <div class="archive-card archive-card--locked {tilt_class}">
+                    <div class="archive-card__lock">🔒</div>
+                    <p class="archive-card__locked-text">REQUIS: LVL {i}</p>
+                </div>
+            ''', unsafe_allow_html=True)
+            st.button(f"🔒 UNITÉ V{i} VERROUILLÉE", key=f"btn_locked_{i}", disabled=True)
+
+
+# Affiche d'abord les 5 premières cartes
+top_cols = st.columns(3)
+for idx, i in enumerate(range(1, 6)):
+    render_agent_card(i, top_cols[idx % 3])
+
+# Les cartes restantes sont pliées dans "Voir plus"
+with st.expander("▼ CHARGER UNITÉS SUIVANTES"):
+    more_cols = st.columns(3)
+    for idx, i in enumerate(range(6, 51)):
+        render_agent_card(i, more_cols[idx % 3])
+
+# 4. NAVIGATION
+if st.button("⬅️ RETOUR AU TERMINAL"):
+    st.switch_page("app.py")

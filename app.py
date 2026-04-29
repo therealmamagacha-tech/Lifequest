@@ -65,52 +65,54 @@ def sync_save():
             "mode": st.session_state.mode,
             "mission_active": st.session_state.mission_active,
             "mission_text": st.session_state.mission_text,
-            "history": st.session_state.history
+            "history": st.session_state.history,
+            "streak": st.session_state.get("streak", 0),
+            "last_mission_date": st.session_state.get("last_mission_date", None),
+            "palmares": st.session_state.get("palmares", []),
         }
         auth.save_user(st.session_state.username, data)
 
-# --- ÉCRAN D'ACCÈS (REMPLISSAGE DU RECTANGLE NOIR) ---
+# --- ÉCRAN D'ACCÈS ---
 if not st.session_state.logged_in:
     st.markdown('<h1 class="main-title">CORE_OS</h1>', unsafe_allow_html=True)
-    
-    # Ton cadre biseauté avec instructions
+
     st.markdown('''
         <div class="login-frame">
             <h3 style="margin:0; letter-spacing:3px; color:#00f2ff; font-family:Orbitron;">[ STANDBY_MODE ]</h3>
             <p style="margin:15px 0 0 0; font-size:1rem; opacity:0.9; line-height:1.5;">
-                Système de gamification CORE_OS détecté.<br>
-                Identifiez-vous pour charger votre <b>Neural-Link</b> ou créez un compte agent pour commencer.
+                Système CORE_OS en attente d'opérateur.<br>
+                Initialisez votre session ou enregistrez un nouvel agent.
             </p>
         </div>
     ''', unsafe_allow_html=True)
 
     with st.container():
         st.markdown('<div style="max-width:500px; margin:auto; padding:10px;">', unsafe_allow_html=True)
-        user_input = st.text_input("🆔 AGENT_ID")
-        pass_input = st.text_input("🔑 ACCESS_CODE", type="password")
+        user_input = st.text_input("🆔 IDENTIFIANT_OPÉRATEUR")
+        pass_input = st.text_input("🔑 CODE_ACCÈS", type="password")
         can_auth = bool(user_input.strip()) and bool(pass_input)
-        
+
         c1, c2 = st.columns(2)
         with c1:
-            if st.button("LOG_IN", type="primary", disabled=not can_auth):
+            if st.button("INITIALISER SESSION", type="primary", disabled=not can_auth):
                 data = auth.load_user(user_input, pass_input)
                 if data:
                     st.session_state.update(data)
                     st.session_state.username = user_input
                     st.session_state.logged_in = True
                     st.session_state.waiting_for_proof = False
+                    # Compatibilité : init champs absents pour anciens comptes
+                    if "streak" not in st.session_state:
+                        st.session_state.streak = 0
+                    if "last_mission_date" not in st.session_state:
+                        st.session_state.last_mission_date = None
+                    if "palmares" not in st.session_state:
+                        st.session_state.palmares = []
                     st.rerun()
                 else:
-                    st.error("ACCÈS REFUSÉ : Identifiants invalides.")
-
-            if st.button("📂 ACCÉDER AUX ARCHIVES", disabled=not st.session_state.get("logged_in", False)):
-                st.switch_page("pages/archives.py")
-
-            if st.button("⚔️ LANCER UNE MISSION", disabled=not st.session_state.get("logged_in", False)):
-                st.switch_page("missions.py")
+                    st.error("ACCÈS REFUSÉ — Identifiants invalides.")
         with c2:
-            # Correction du bouton SIGN_UP pour une connexion instantanée
-            if st.button("SIGN_UP", type="primary", disabled=not can_auth):
+            if st.button("ENREGISTRER OPÉRATEUR", type="primary", disabled=not can_auth):
                 if len(user_input) > 2 and len(pass_input) > 3:
                     if auth.user_exists(user_input):
                         st.warning("AGENT DÉJÀ RÉPERTORIÉ.")
@@ -119,11 +121,11 @@ if not st.session_state.logged_in:
                         new_data = {
                             "password": pwd_h,
                             "xp": 0, "lvl": 1, "mode": None,
-                            "mission_active": False, "mission_text": "", "history": []
+                            "mission_active": False, "mission_text": "",
+                            "history": [], "streak": 0,
+                            "last_mission_date": None, "palmares": [],
                         }
                         auth.save_user(user_input, new_data)
-                        
-                        # Connexion automatique immédiate
                         st.session_state.update(new_data)
                         st.session_state.username = user_input
                         st.session_state.logged_in = True
@@ -136,23 +138,43 @@ if not st.session_state.logged_in:
 else:
     # HUD SIDEBAR
     with st.sidebar:
+        # Calcul streak et couleur
+        streak = st.session_state.get("streak", 0)
+        streak_color = "#00ff00" if streak >= 7 else ("#ffb700" if streak >= 3 else "#00f2ff")
+        streak_label = f"{streak}🔥 SÉRIE" if streak > 0 else "AUCUNE SÉRIE"
+
         st.markdown(f'''
             <div class="level-card">
-                <small>OPERATOR: {st.session_state.username.upper()}</small><br>
-                <span class="level-val">LVL_{st.session_state.lvl}</span>
+                <small>OPÉRATEUR: {st.session_state.username.upper()}</small><br>
+                <span class="level-val">RANG LVL_{st.session_state.lvl}</span><br>
+                <span style="font-size:0.75rem; color:{streak_color}; font-family:monospace;">{streak_label}</span>
             </div>
         ''', unsafe_allow_html=True)
-        st.write(f"PROGRESSION : {st.session_state.xp}/100 XP")
+
+        # Barre XP courante
+        st.caption("DONNÉES_XP")
         st.progress(min(st.session_state.xp / 100, 1.0))
-        if st.button("📂 CONSULTER LES ARCHIVES", type="primary"):
-            st.switch_page("pages/archives.py")
+        st.caption(f"{st.session_state.xp}/100 XP")
+
+        # Barre XP vers prochaine unité
+        next_unit = st.session_state.lvl + 1
+        xp_to_next = max(0, (next_unit * 10) - st.session_state.xp)
+        st.caption(f"PROCHAINE UNITÉ : V{next_unit} — {xp_to_next} XP restants")
+        progress_to_next = max(0.0, min(1.0, st.session_state.xp / max(next_unit * 10, 1)))
+        st.progress(progress_to_next)
+
+        st.markdown("---")
+        if st.button("👥 ESCOUADE", type="primary"):
+            st.switch_page("pages/escouade.py")
+        if st.button("🏆 PALMARÈS", type="primary"):
+            st.switch_page("pages/palmares.py")
         st.markdown("---")
         st.caption("Zone critique")
-        if st.button("🔌 DISCONNECT", type="secondary"):
+        if st.button("🔌 COUPER LIAISON", type="secondary"):
             sync_save()
             st.session_state.logged_in = False
             st.rerun()
-            
+
         can_reboot = st.session_state.mode is not None or st.session_state.mission_active or st.session_state.waiting_for_proof
         if st.button("🔄 REBOOT HUB", type="secondary", disabled=not can_reboot):
             st.session_state.mode = None
@@ -163,37 +185,54 @@ else:
 
     st.markdown('<h1 class="main-title">CORE_OS</h1>', unsafe_allow_html=True)
 
+    # TICKER D'ÉTAT DE LA BASE
+    palmares_count = len(st.session_state.get("palmares", []))
+    last_date = st.session_state.get("last_mission_date", None)
+    if last_date:
+        try:
+            import datetime as _dt
+            days_since = (_dt.date.today() - _dt.date.fromisoformat(last_date[:10])).days
+            ticker_msg = f"BASE STABLE — dernier contrat il y a {days_since}j — {palmares_count} opérations répertoriées"
+            ticker_color = "#ff4d6d" if days_since >= 3 else "#00f2ff"
+        except (ValueError, TypeError):
+            ticker_msg = f"BASE STABLE — {palmares_count} opérations répertoriées"
+            ticker_color = "#00f2ff"
+    else:
+        ticker_msg = "AUCUNE OPÉRATION ENREGISTRÉE — Scannez votre première zone pour activer le protocole"
+        ticker_color = "#ffb700"
+    st.markdown(f'<p style="font-family:monospace; font-size:0.75rem; color:{ticker_color}; border-left:2px solid {ticker_color}; padding-left:8px; margin-bottom:1rem;">▶ {ticker_msg}</p>', unsafe_allow_html=True)
+
     # 1. CHOIX DU MODE
     if st.session_state.mode is None:
         st.markdown('''
             <div class="manual-frame panel-shell">
-                <h3>[ MANUAL_OVERRIDE ]</h3>
-                <p>Scannez une corvée ou une tâche pour générer une mission.</p>
+                <h3>[ SCANNER ZONE ]</h3>
+                <p>Photographiez une corvée pour que l'IA génère un contrat de mission.</p>
             </div>
         ''', unsafe_allow_html=True)
         st.markdown('<div class="mobile-cta">', unsafe_allow_html=True)
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("📷 OPTIC SCANNER", type="primary"):
+            if st.button("📷 SCANNER ZONE", type="primary"):
                 st.session_state.mode = "camera"
                 sync_save(); st.rerun()
         with col2:
-            if st.button("📁 DATA FEED", type="primary"):
+            if st.button("📁 TRANSMETTRE FICHIER", type="primary"):
                 st.session_state.mode = "upload"
                 sync_save(); st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # 2. MISSION ACTIVE
+    # 2. CONTRAT ACTIF
     elif st.session_state.mission_active:
         st.markdown(f'''
             <div class="mission-box panel-shell">
-                <h3 style="margin:0; color:#00f2ff; font-family:Orbitron;">> MISSION_DÉCRYPTÉE</h3>
+                <h3 style="margin:0; color:#00f2ff; font-family:Orbitron;">> CONTRAT_EN_COURS</h3>
                 <p style="color:#fff; margin-top:15px;">{st.session_state.mission_text}</p>
             </div>
         ''', unsafe_allow_html=True)
-        
+
         if not st.session_state.waiting_for_proof:
-            if st.button("🛰️ SOUMETTRE PREUVE", type="primary"):
+            if st.button("🛰️ TRANSMETTRE PREUVE", type="primary"):
                 st.session_state.waiting_for_proof = True
                 st.rerun()
         else:
@@ -214,10 +253,34 @@ else:
                             with st.spinner("VÉRIFICATION IA..."):
                                 check_res = model.generate_content([f"La mission est : {st.session_state.mission_text}. Réponds 'VALIDÉ' ou 'REJETÉ'.", img_p])
                                 if "VALIDÉ" in check_res.text.upper():
-                                    st.session_state.xp += 20
+                                    import datetime as _dt
+                                    today_str = _dt.date.today().isoformat()
+                                    last = st.session_state.get("last_mission_date", None)
+                                    # Mise à jour streak
+                                    if last == today_str:
+                                        pass  # déjà compté aujourd'hui
+                                    elif last and (_dt.date.today() - _dt.date.fromisoformat(last)).days == 1:
+                                        st.session_state.streak = st.session_state.get("streak", 0) + 1
+                                    else:
+                                        st.session_state.streak = 1
+                                    st.session_state.last_mission_date = today_str
+
+                                    xp_gain = 20
+                                    st.session_state.xp += xp_gain
                                     st.session_state.mission_active = False
                                     st.session_state.waiting_for_proof = False
                                     st.session_state.history.append(h_p)
+
+                                    # Sauvegarde palmarès
+                                    if "palmares" not in st.session_state:
+                                        st.session_state.palmares = []
+                                    st.session_state.palmares.append({
+                                        "nom": st.session_state.mission_text[:60],
+                                        "date": _dt.datetime.now().isoformat(),
+                                        "xp_gained": xp_gain,
+                                        "zone": "general",
+                                    })
+
                                     if st.session_state.xp >= 100:
                                         st.session_state.lvl += 1
                                         st.session_state.xp = 0
@@ -229,9 +292,9 @@ else:
                         except Exception as e:
                             st.error(f"ERREUR : {e}")
 
-    # 3. SCAN DE DÉPART
+    # 3. SCAN DE ZONE
     else:
-        st.markdown(f"### [ ACQUISITION : {st.session_state.mode.upper()} ]")
+        st.markdown(f"### [ SCANNER ZONE : {st.session_state.mode.upper()} ]")
         source = st.camera_input("SCAN") if st.session_state.mode == "camera" else st.file_uploader("DATA")
         
         if source:
@@ -247,7 +310,7 @@ else:
                         st.stop()
                     try:
                         with st.spinner("LIAISON CORE..."):
-                            resp = model.generate_content(["Crée une mission RPG ultra courte : NOM, OBJECTIF, +20XP.", img])
+                            resp = model.generate_content(["Tu es une IA de gamification cyberpunk. À partir de cette photo de corvée domestique, génère un contrat de mission RPG ultra court et immersif : NOM DE MISSION (style cyberpunk), OBJECTIF PRÉCIS (ce que l'opérateur doit accomplir), RÉCOMPENSE (+20 XP). Maximum 3 lignes.", img])
                             st.session_state.mission_text = resp.text
                             st.session_state.mission_active = True
                             st.session_state.history.append(h_i)
