@@ -28,6 +28,13 @@ def get_base64_image(image_path):
     except OSError:
         return None
 
+NOMS_AGENTS = [
+    "Kenji", "Akira", "Rei", "Hiroshi", "Tetsuo", "Kusanagi", "Yuki", "Hanzo",
+    "Miko", "SaitoSterling", "Valerius", "Sloane", "Maximilian", "Eleanor",
+    "Kozlov", "Halloway", "Vanderbilt", "Saburo", "ArisProxy", "Glitch",
+    "Data", "Cipher", "Null", "Static", "Vector", "Bit", "Link", "Buffer",
+]
+
 # 2. FONCTION DU GÉNÉRATEUR (Modifiée pour tes images locales)
 def generer_agent(niveau):
     # TA LIGNE D'IMAGE : cherche "Perso 1.png", "Perso 2.png", etc. dans le dossier assets
@@ -42,8 +49,8 @@ def generer_agent(niveau):
     # Calcul de la puissance (10 de base + 2 par niveau)
     puissance = 10 + (niveau * 2)
     
-    # Nom automatique
-    nom = f"UNIT_NX_{niveau}"
+    # Nom du personnage depuis la liste, cycle si niveau > nb de noms
+    nom = NOMS_AGENTS[(niveau - 1) % len(NOMS_AGENTS)]
     
     return nom, img_data, puissance
 
