@@ -1,6 +1,7 @@
 import streamlit as st
 import random
 import time
+from lucide import icon_html
 
 # 1. STYLE (On garde ton identité visuelle)
 try:
@@ -40,7 +41,7 @@ with col2:
             <h2 style="color:#ff0055; font-size:1.2rem; font-family:Orbitron;">SABOTAGE_RESEAU</h2>
             <p style="font-size:0.8rem;">Cible : Serveurs Arasaka. <br>Difficulté : <b>Niveau 40</b></p>
             <hr style="border:0.5px solid #333;">
-            <p style="font-size:0.7rem; color:gray;">Plus votre puissance est élevée, plus le succès est garanti.</p>
+            <p style="font-size:0.7rem; color:#ffffff;">Plus votre puissance est élevée, plus le succès est garanti.</p>
         </div>
     ''', unsafe_allow_html=True)
 
@@ -63,12 +64,12 @@ with col2:
             
             if resultat <= chances_succes:
                 st.balloons()
-                st.success("🔥 CONTRAT ACCOMPLI — Zone sécurisée. XP transmis.")
+                st.success("CONTRAT ACCOMPLI — Zone sécurisée. XP transmis.")
                 st.session_state.lvl = st.session_state.get('lvl', 1) + 1
                 st.info(f"RANG AUGMENTÉ — Opérateur niveau {st.session_state.lvl}")
                 st.write("Rendez-vous dans l'ESCOUADE pour découvrir vos nouvelles unités.")
             else:
-                st.error("❌ CONTRAT REJETÉ — Puissance insuffisante. Déployez une unité plus puissante.")
+                st.error("CONTRAT REJETÉ — Puissance insuffisante. Déployez une unité plus puissante.")
     if not can_launch:
         st.caption("Déployez une unité depuis l'ESCOUADE pour activer le contrat.")
 
@@ -76,8 +77,10 @@ with col2:
 st.markdown("<br>", unsafe_allow_html=True)
 col_nav1, col_nav2 = st.columns(2)
 with col_nav1:
-    if st.button("⬅️ RETOUR AU TERMINAL"):
+    st.markdown(f'<p style="margin:0 0 8px 0;">{icon_html("arrow-left", 14, "#00f2ff")}</p>', unsafe_allow_html=True)
+    if st.button("RETOUR AU TERMINAL"):
         st.switch_page("app.py")
 with col_nav2:
-    if st.button("👥 ESCOUADE"):
+    st.markdown(f'<p style="margin:0 0 8px 0;">{icon_html("users", 14, "#00f2ff")}</p>', unsafe_allow_html=True)
+    if st.button("ESCOUADE"):
         st.switch_page("pages/escouade.py")

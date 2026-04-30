@@ -12,6 +12,28 @@
     --danger: #ff4d6d;
 }
 
+.lucide-inline {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* Force tous les textes secondaires Streamlit (souvent gris) en blanc */
+[data-testid="stCaptionContainer"],
+[data-testid="stCaptionContainer"] *,
+.stCaption,
+.stCaption *,
+[data-testid="stFormHelpText"],
+[data-testid="stFormHelpText"] * {
+    color: #ffffff !important;
+}
+
+/* Les textes de boutons désactivés sortent souvent en gris par défaut */
+div.stButton > button:disabled,
+div.stButton > button[disabled] {
+    color: #ffffff !important;
+}
+
 /* Animation de la grille de fond */
 @keyframes gridMove { 
     from { background-position: 0 0, 0 0, 0 0; } 
@@ -444,7 +466,7 @@ div[data-baseweb="progress-bar"] > div {
     margin-top: 52px;
     font-family: 'Orbitron';
     font-size: 0.78rem;
-    color: rgba(220, 236, 246, 0.82);
+    color: #ffffff;
 }
 
 @media (max-width: 768px) {
@@ -494,7 +516,7 @@ div[data-baseweb="progress-bar"] > div {
 .stat-badge__label {
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.65rem;
-    color: #888;
+    color: #ffffff;
     margin-top: 6px;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -554,7 +576,7 @@ div[data-baseweb="progress-bar"] > div {
 .palmares-entry__date {
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.65rem;
-    color: #555;
+    color: #ffffff;
     margin: 2px 0 0;
 }
 .palmares-entry__xp {

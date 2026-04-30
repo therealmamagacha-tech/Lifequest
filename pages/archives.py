@@ -3,6 +3,7 @@ import hashlib
 import base64  # AJOUTÉ pour lire tes images locales
 import os      # AJOUTÉ pour vérifier tes fichiers
 from i18n import T
+from lucide import icon_html
 
 # 1. STYLE ET CONFIG
 try:
@@ -84,9 +85,10 @@ def render_agent_card(i, col_slot):
                 st.rerun()
         else:
             # --- AGENT VERROUILLÉ ---
+            lock_icon = icon_html("lock", 36, "#8aa3b8")
             st.markdown(f'''
                 <div class="archive-card archive-card--locked {tilt_class}">
-                    <div class="archive-card__lock">🔒</div>
+                    <div class="archive-card__lock">{lock_icon}</div>
                     <p class="archive-card__locked-text">REQUIS: LVL {i}</p>
                 </div>
             ''', unsafe_allow_html=True)

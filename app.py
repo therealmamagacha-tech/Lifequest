@@ -5,6 +5,7 @@ import hashlib
 import os
 import auth  # Ton fichier auth.py doit être présent dans le dossier
 from i18n import T, DIFFICULTY_MAP, BADGES_DEF, check_badges
+from lucide import icon_html
 
 
 def load_dotenv_file(path=".env"):
@@ -80,14 +81,14 @@ if 'lang' not in st.session_state:
 
 # --- ÉCRAN D'ACCÈS ---
 if not st.session_state.logged_in:
-    st.markdown('<h1 class="main-title">CORE_OS</h1>', unsafe_allow_html=True)
-
     # Bouton langue en haut à droite
-    col_lang_r = st.columns([6, 1])
+    col_lang_r = st.columns([12, 1])
     with col_lang_r[1]:
         if st.button(T("lang_toggle"), key="lang_login"):
             st.session_state.lang = "en" if st.session_state.lang == "fr" else "fr"
             st.rerun()
+
+    st.markdown('<h1 class="main-title">CORE_OS</h1>', unsafe_allow_html=True)
 
     st.markdown(f'''
         <div class="login-frame">
@@ -160,7 +161,8 @@ else:
         # Calcul streak et couleur
         streak = st.session_state.get("streak", 0)
         streak_color = "#00ff00" if streak >= 7 else ("#ffb700" if streak >= 3 else "#00f2ff")
-        streak_label = f"{streak}🔥 {T('sidebar_serie')}" if streak > 0 else T('sidebar_no_serie')
+        streak_icon = icon_html("flame", 14, streak_color)
+        streak_label = f"{streak_icon} {streak} {T('sidebar_serie')}" if streak > 0 else T('sidebar_no_serie')
 
         st.markdown(f'''
             <div class="level-card">
@@ -219,7 +221,8 @@ else:
     else:
         ticker_msg = T("ticker_no_ops")
         ticker_color = "#ffb700"
-    st.markdown(f'<p style="font-family:monospace; font-size:0.75rem; color:{ticker_color}; border-left:2px solid {ticker_color}; padding-left:8px; margin-bottom:1rem;">▶ {ticker_msg}</p>', unsafe_allow_html=True)
+    ticker_icon = icon_html("chevron-right", 12, ticker_color)
+    st.markdown(f'<p style="font-family:monospace; font-size:0.75rem; color:{ticker_color}; border-left:2px solid {ticker_color}; padding-left:8px; margin-bottom:1rem;">{ticker_icon} {ticker_msg}</p>', unsafe_allow_html=True)
 
     # 1. CHOIX DU MODE
     if st.session_state.mode is None:
@@ -319,8 +322,8 @@ else:
 
                                     # Vérification badges
                                     new_badges = check_badges(st.session_state)
-                                    for icon, label_key in new_badges:
-                                        st.toast(f"{T('badge_unlocked')} : {icon} {T(label_key)}", icon="🏅")
+                                    for icon_name, label_key in new_badges:
+                                        st.toast(f"{T('badge_unlocked')} : {T(label_key)}")
 
                                     if st.session_state.xp >= 100:
                                         st.session_state.lvl += 1

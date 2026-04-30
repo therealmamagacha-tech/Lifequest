@@ -1,6 +1,7 @@
 import streamlit as st
 import random
 import time
+from lucide import icon_html
 
 # 1. STYLE (On garde ton identité visuelle)
 try:
@@ -40,7 +41,7 @@ with col2:
             <h2 style="color:#ff0055; font-size:1.2rem; font-family:Orbitron;">SABOTAGE_RESEAU</h2>
             <p style="font-size:0.8rem;">Cible : Serveurs Arasaka. <br>Difficulté : <b>Niveau 40</b></p>
             <hr style="border:0.5px solid #333;">
-            <p style="font-size:0.7rem; color:gray;">Plus votre puissance est élevée, plus le succès est garanti.</p>
+            <p style="font-size:0.7rem; color:#ffffff;">Plus votre puissance est élevée, plus le succès est garanti.</p>
         </div>
     ''', unsafe_allow_html=True)
 
@@ -63,17 +64,18 @@ with col2:
             
             if resultat <= chances_succes:
                 st.balloons()
-                st.success("🔥 MISSION RÉUSSIE ! Données extraites.")
+                st.success("MISSION RÉUSSIE ! Données extraites.")
                 # ON AUGMENTE LE NIVEAU DU JOUEUR !
                 st.session_state.lvl = st.session_state.get('lvl', 1) + 1
                 st.info(f"NIVEAU AUGMENTÉ : Vous êtes maintenant **Niveau {st.session_state.lvl}**")
                 st.write("Allez dans les ARCHIVES pour voir votre nouveau personnage !")
             else:
-                st.error("❌ ÉCHEC. L'agent a dû battre en retraite. Puissance insuffisante.")
+                st.error("ÉCHEC. L'agent a dû battre en retraite. Puissance insuffisante.")
     if not can_launch:
         st.caption("Sélectionne un agent dans les archives pour activer le lancement.")
 
 # Bouton de navigation
 st.markdown("<br>", unsafe_allow_html=True)
-if st.button("⬅️ RETOUR AU HUB"):
+st.markdown(f'<p style="margin:0 0 8px 0;">{icon_html("arrow-left", 14, "#00f2ff")}</p>', unsafe_allow_html=True)
+if st.button("RETOUR AU HUB"):
     st.switch_page("app.py")
