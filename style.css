@@ -563,3 +563,51 @@ div[data-baseweb="progress-bar"] > div {
     font-weight: 700;
     flex-shrink: 0;
 }
+
+/* =============================================
+   SUCCÈS AGENT (achievement badges)
+   ============================================= */
+@keyframes achieveGlow {
+    0%, 100% { box-shadow: 0 0 8px rgba(255, 183, 0, 0.4); }
+    50%       { box-shadow: 0 0 18px rgba(255, 183, 0, 0.8); }
+}
+
+.achievement-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 14px 8px 10px;
+    background: rgba(0, 0, 0, 0.5);
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.25s ease;
+    margin-bottom: 10px;
+    min-height: 90px;
+}
+.achievement-badge[style*="opacity:1"] {
+    animation: achieveGlow 2.5s ease-in-out infinite;
+}
+.achievement-badge:hover {
+    transform: translateY(-2px);
+}
+
+/* =============================================
+   RADIO DIFFICULTÉ — style cyberpunk
+   ============================================= */
+div[data-testid="stRadio"] > label {
+    font-family: 'Orbitron', monospace !important;
+    font-size: 0.78rem !important;
+    color: #00f2ff !important;
+    letter-spacing: 0.5px;
+}
+
+div[data-testid="stRadio"] > div {
+    gap: 0.5rem;
+}
+
+div[data-testid="stRadio"] label span {
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 0.82rem !important;
+}

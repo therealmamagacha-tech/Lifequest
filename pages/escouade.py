@@ -2,6 +2,7 @@ import streamlit as st
 import hashlib
 import base64  # AJOUTÉ pour lire tes images locales
 import os      # AJOUTÉ pour vérifier tes fichiers
+from i18n import T
 
 # 1. STYLE ET CONFIG
 try:
@@ -15,8 +16,8 @@ except OSError as e:
 # On récupère le niveau actuel du joueur (app.py l'initialise à 1)
 user_lvl = st.session_state.get('lvl', 1)
 
-st.markdown('<h1 class="main-title">ESCOUADE</h1>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:monospace; font-size:0.8rem; color:#00f2ff;">[ NIVEAU D\'ACCÈS : {user_lvl} / 50 ] — Unités déployées disponibles</p>', unsafe_allow_html=True)
+st.markdown(f'<h1 class="main-title">{T("escouade_title")}</h1>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:monospace; font-size:0.8rem; color:#00f2ff;">[ {T("escouade_level")} : {user_lvl} / 50 ] — {T("escouade_units")}</p>', unsafe_allow_html=True)
 
 # --- FONCTION POUR CONVERTIR TES IMAGES PERSO EN TEXTE LISIBLE PAR LE HTML ---
 def get_base64_image(image_path):
@@ -76,7 +77,7 @@ def render_agent_card(i, col_slot):
             ''', unsafe_allow_html=True)
 
             # Bouton pour sélectionner cet agent
-            if st.button(f"▶ DÉPLOYER V{i}", key=f"btn_{i}", type="primary"):
+            if st.button(f"{T('btn_deploy')}{i}", key=f"btn_{i}", type="primary"):
                 st.session_state.active_agent = nom
                 st.session_state.active_puissance = pwr
                 st.session_state.active_img = img
@@ -90,7 +91,7 @@ def render_agent_card(i, col_slot):
                     <p class="archive-card__locked-text">REQUIS: LVL {i}</p>
                 </div>
             ''', unsafe_allow_html=True)
-            st.button(f"🔒 UNITÉ V{i} VERROUILLÉE", key=f"btn_locked_{i}", disabled=True)
+            st.button(f"{T('btn_locked_unit')}{i}{T('btn_locked_suf')}", key=f"btn_locked_{i}", disabled=True)
 
 
 # Affiche d'abord les 5 premières cartes
@@ -99,11 +100,11 @@ for idx, i in enumerate(range(1, 6)):
     render_agent_card(i, top_cols[idx % 3])
 
 # Les cartes restantes sont pliées dans "Voir plus"
-with st.expander("▼ CHARGER UNITÉS SUIVANTES"):
+with st.expander(T("escouade_load")):
     more_cols = st.columns(3)
     for idx, i in enumerate(range(6, 51)):
         render_agent_card(i, more_cols[idx % 3])
 
 # 4. NAVIGATION
-if st.button("⬅️ RETOUR AU TERMINAL"):
+if st.button(T("escouade_nav")):
     st.switch_page("app.py")

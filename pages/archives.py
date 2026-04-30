@@ -2,6 +2,7 @@ import streamlit as st
 import hashlib
 import base64  # AJOUTÉ pour lire tes images locales
 import os      # AJOUTÉ pour vérifier tes fichiers
+from i18n import T
 
 # 1. STYLE ET CONFIG
 try:
@@ -15,7 +16,7 @@ except OSError as e:
 # On récupère le niveau actuel du joueur (app.py l'initialise à 1)
 user_lvl = st.session_state.get('lvl', 1)
 
-st.markdown('<h1 class="main-title">ARCHIVES_GÉNÉRATIVES</h1>', unsafe_allow_html=True)
+st.markdown(f'<h1 class="main-title">{T("archives_title")}</h1>', unsafe_allow_html=True)
 
 # --- FONCTION POUR CONVERTIR TES IMAGES PERSO EN TEXTE LISIBLE PAR LE HTML ---
 def get_base64_image(image_path):
@@ -54,7 +55,7 @@ def generer_agent(niveau):
     return nom, img_data, puissance
 
 # 3. AFFICHAGE EN GRILLE
-st.write(f"### [ NIVEAU D'ACCÈS : {user_lvl} / 50 ]")
+st.write(f"### [ {T('archives_level')} : {user_lvl} / 50 ]")
 
 def render_agent_card(i, col_slot):
     nom, img, pwr = generer_agent(i)
@@ -75,7 +76,7 @@ def render_agent_card(i, col_slot):
             ''', unsafe_allow_html=True)
 
             # Bouton pour sélectionner cet agent
-            if st.button(f"SYNCHRONISER V{i}", key=f"btn_{i}", type="primary"):
+            if st.button(f"{T('btn_sync')}{i}", key=f"btn_{i}", type="primary"):
                 st.session_state.active_agent = nom
                 st.session_state.active_puissance = pwr
                 st.session_state.active_img = img
@@ -89,7 +90,7 @@ def render_agent_card(i, col_slot):
                     <p class="archive-card__locked-text">REQUIS: LVL {i}</p>
                 </div>
             ''', unsafe_allow_html=True)
-            st.button(f"VERROUILLÉ V{i}", key=f"btn_locked_{i}", disabled=True)
+            st.button(f"{T('btn_locked_txt')}{i}", key=f"btn_locked_{i}", disabled=True)
 
 
 # Affiche d'abord les 5 premières cartes
@@ -98,11 +99,11 @@ for idx, i in enumerate(range(1, 6)):
     render_agent_card(i, top_cols[idx % 3])
 
 # Les cartes restantes sont pliées dans "Voir plus"
-with st.expander("Voir plus"):
+with st.expander(T("archives_voir_plus")):
     more_cols = st.columns(3)
     for idx, i in enumerate(range(6, 51)):
         render_agent_card(i, more_cols[idx % 3])
 
 # 4. NAVIGATION
-if st.button("⬅️ TERMINAL"):
+if st.button(T("archives_nav")):
     st.switch_page("app.py")
