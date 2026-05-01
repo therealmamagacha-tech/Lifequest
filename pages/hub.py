@@ -80,6 +80,95 @@ def ensure_session_defaults():
 def get_image_hash(img):
     return hashlib.md5(img.tobytes()).hexdigest()
 
+
+def build_check_prompt(lang, difficulty_key, mission_text):
+    if lang == "en":
+        if difficulty_key in ("easy", "facile"):
+            return (
+                f"Mission to verify: {mission_text}. "
+                "EASY level: approve if the proof clearly shows real progress, even if not perfect. "
+                "Reply with this exact format: VERDICT: APPROVED or VERDICT: REJECTED, then one short sentence of justification."
+            )
+        if difficulty_key in ("hard", "difficile"):
+            return (
+                f"Mission to verify: {mission_text}. "
+                "HARD level: approve only if the goal is fully completed and the proof also shows the expected quality/constraint. "
+                "If uncertain, reject. Reply with this exact format: VERDICT: APPROVED or VERDICT: REJECTED, then one short sentence of justification."
+            )
+        return (
+            f"Mission to verify: {mission_text}. "
+            "MEDIUM level: approve if the main objective is credibly achieved. "
+            "Reply with this exact format: VERDICT: APPROVED or VERDICT: REJECTED, then one short sentence of justification."
+        )
+
+    if difficulty_key in ("easy", "facile"):
+        return (
+            f"Mission à vérifier : {mission_text}. "
+            "Niveau FACILE: valide si la preuve montre clairement une progression réelle de la tâche, même si ce n'est pas parfait. "
+            "Réponds avec ce format exact : VERDICT: VALIDÉ ou VERDICT: REJETÉ, puis une justification en une phrase courte."
+        )
+    if difficulty_key in ("hard", "difficile"):
+        return (
+            f"Mission à vérifier : {mission_text}. "
+            "Niveau DIFFICILE: valide uniquement si l'objectif est totalement accompli et si la preuve montre aussi la contrainte/qualité attendue. "
+            "En cas de doute, rejette. Réponds avec ce format exact : VERDICT: VALIDÉ ou VERDICT: REJETÉ, puis une justification en une phrase courte."
+        )
+    return (
+        f"Mission à vérifier : {mission_text}. "
+        "Niveau MOYEN: valide si l'objectif principal est atteint de façon crédible. "
+        "Réponds avec ce format exact : VERDICT: VALIDÉ ou VERDICT: REJETÉ, puis une justification en une phrase courte."
+    )
+
+
+def build_generation_prompt(lang, difficulty_key, xp_gain):
+    if lang == "en":
+        if difficulty_key in ("easy", "facile"):
+            return (
+                "You are a cyberpunk gamification AI. From this household chore photo, generate a SIMPLE and quick RPG mission contract: "
+                "MISSION NAME (cyberpunk style), SIMPLE AND PRECISE OBJECTIVE, REWARD (+"
+                f"{xp_gain} XP). Maximum 3 lines. Output only in English."
+            )
+        if difficulty_key in ("hard", "difficile"):
+            return (
+                "You are a cyberpunk gamification AI. From this household chore photo, generate a DIFFICULT and demanding RPG mission contract "
+                "with a precise measurable objective and one additional constraint (time, quality, completeness): "
+                "MISSION NAME (cyberpunk style), HARD OBJECTIVE, CONSTRAINT, REWARD (+"
+                f"{xp_gain} XP). Maximum 4 lines. Output only in English."
+            )
+        return (
+            "You are a cyberpunk gamification AI. From this household chore photo, generate an ultra-short immersive RPG mission contract: "
+            "MISSION NAME (cyberpunk style), PRECISE OBJECTIVE (what the operator must accomplish), REWARD (+"
+            f"{xp_gain} XP). Maximum 3 lines. Output only in English."
+        )
+
+    if difficulty_key in ("easy", "facile"):
+        return (
+            "Tu es une IA de gamification cyberpunk. À partir de cette photo de corvée domestique, génère un contrat de mission RPG SIMPLE et rapide : "
+            "NOM DE MISSION (style cyberpunk), OBJECTIF SIMPLE ET PRÉCIS, RÉCOMPENSE (+"
+            f"{xp_gain} XP). Maximum 3 lignes. Réponds uniquement en français."
+        )
+    if difficulty_key in ("hard", "difficile"):
+        return (
+            "Tu es une IA de gamification cyberpunk. À partir de cette photo de corvée domestique, génère un contrat de mission RPG DIFFICILE et exigeant "
+            "avec un objectif précis et mesurable, une contrainte supplémentaire (temps, qualité, exhaustivité) : "
+            "NOM DE MISSION (style cyberpunk), OBJECTIF DIFFICILE, CONTRAINTE, RÉCOMPENSE (+"
+            f"{xp_gain} XP). Maximum 4 lignes. Réponds uniquement en français."
+        )
+    return (
+        "Tu es une IA de gamification cyberpunk. À partir de cette photo de corvée domestique, génère un contrat de mission RPG ultra court et immersif : "
+        "NOM DE MISSION (style cyberpunk), OBJECTIF PRÉCIS (ce que l'opérateur doit accomplir), RÉCOMPENSE (+"
+        f"{xp_gain} XP). Maximum 3 lignes. Réponds uniquement en français."
+    )
+
+
+def is_approved_verdict(text):
+    verdict_text = (text or "").upper()
+    approved_tokens = ["VERDICT: APPROVED", "VERDICT: VALIDÉ", "VERDICT: VALIDE", "APPROVED", "VALIDÉ", "VALIDE"]
+    rejected_tokens = ["VERDICT: REJECTED", "VERDICT: REJETÉ", "VERDICT: REJETE", "REJECTED", "REJETÉ", "REJETE"]
+    if any(token in verdict_text for token in rejected_tokens):
+        return False
+    return any(token in verdict_text for token in approved_tokens)
+
 def sync_save():
     if st.session_state.logged_in:
         data = {
@@ -312,27 +401,11 @@ else:
                     else:
                         try:
                             with st.spinner(T("spinner_verify")):
+                                current_lang = st.session_state.get("lang", "fr")
                                 diff_key = diff_info.get("key", "moyen")
-                                if diff_key in ("facile", "easy"):
-                                    check_prompt = (
-                                        f"Mission à vérifier : {st.session_state.mission_text}. "
-                                        "Niveau FACILE: valide si la preuve montre clairement une progression réelle de la tâche, même si ce n'est pas parfait. "
-                                        "Réponds d'abord par VALIDÉ ou REJETÉ, puis une justification en une phrase."
-                                    )
-                                elif diff_key in ("difficile", "hard"):
-                                    check_prompt = (
-                                        f"Mission à vérifier : {st.session_state.mission_text}. "
-                                        "Niveau DIFFICILE: valide uniquement si l'objectif est totalement accompli et si la preuve montre aussi la contrainte/qualité attendue. "
-                                        "En cas de doute, REJETÉ. Réponds d'abord par VALIDÉ ou REJETÉ, puis une justification en une phrase."
-                                    )
-                                else:
-                                    check_prompt = (
-                                        f"Mission à vérifier : {st.session_state.mission_text}. "
-                                        "Niveau MOYEN: valide si l'objectif principal est atteint de façon crédible. "
-                                        "Réponds d'abord par VALIDÉ ou REJETÉ, puis une justification en une phrase."
-                                    )
+                                check_prompt = build_check_prompt(current_lang, diff_key, st.session_state.mission_text)
                                 check_res = model.generate_content([check_prompt, img_p])
-                                if "VALIDÉ" in check_res.text.upper():
+                                if is_approved_verdict(check_res.text):
                                     import datetime as _dt
                                     today_str = _dt.date.today().isoformat()
                                     last = st.session_state.get("last_mission_date", None)
@@ -371,7 +444,8 @@ else:
                                     sync_save()
                                     st.rerun()
                                 else:
-                                    st.error(f"REJETÉ : {check_res.text}")
+                                    reject_prefix = "REJECTED" if current_lang == "en" else "REJETÉ"
+                                    st.error(f"{reject_prefix} : {check_res.text}")
                         except Exception as e:
                             st.error(f"ERREUR : {e}")
 
@@ -394,14 +468,10 @@ else:
                         st.stop()
                     try:
                         with st.spinner(T("spinner_gen")):
+                            current_lang = st.session_state.get("lang", "fr")
                             diff_key = diff_info["key"]
                             diff_xp = diff_info["xp"]
-                            if diff_key in ("facile", "easy"):
-                                prompt = f"Tu es une IA de gamification cyberpunk. À partir de cette photo de corvée domestique, génère un contrat de mission RPG SIMPLE et rapide : NOM DE MISSION (style cyberpunk), OBJECTIF SIMPLE ET PRÉCIS, RÉCOMPENSE (+{diff_xp} XP). Maximum 3 lignes."
-                            elif diff_key in ("difficile", "hard"):
-                                prompt = f"Tu es une IA de gamification cyberpunk. À partir de cette photo de corvée domestique, génère un contrat de mission RPG DIFFICILE et exigeant avec un objectif précis et mesurable, une contrainte supplémentaire (temps, qualité, exhaustivité) : NOM DE MISSION (style cyberpunk), OBJECTIF DIFFICILE, CONTRAINTE, RÉCOMPENSE (+{diff_xp} XP). Maximum 4 lignes."
-                            else:
-                                prompt = f"Tu es une IA de gamification cyberpunk. À partir de cette photo de corvée domestique, génère un contrat de mission RPG ultra court et immersif : NOM DE MISSION (style cyberpunk), OBJECTIF PRÉCIS (ce que l'opérateur doit accomplir), RÉCOMPENSE (+{diff_xp} XP). Maximum 3 lignes."
+                            prompt = build_generation_prompt(current_lang, diff_key, diff_xp)
                             resp = model.generate_content([prompt, img])
                             st.session_state.mission_text = resp.text
                             st.session_state.mission_active = True
