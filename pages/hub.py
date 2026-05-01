@@ -34,16 +34,16 @@ if GEMINI_API_KEY:
     model = genai.GenerativeModel('gemini-2.5-flash')
 
 if not GEMINI_API_KEY:
-    st.warning("Clé API absente: ajoute GEMINI_API_KEY dans le fichier .env.")
+    st.warning(T("warn_missing_gemini_key"))
 
 # Injection du CSS
 try:
     with open("style.css", "r") as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 except FileNotFoundError:
-    st.error("ERREUR : Fichier style.css introuvable.")
+    st.error(T("err_css_not_found"))
 except OSError as e:
-    st.error(f"ERREUR : Impossible de charger style.css ({e}).")
+    st.error(T("err_css_load").format(error=e))
 
 ensure_ui_defaults(st.session_state)
 inject_ui_overrides(st.session_state)
@@ -326,7 +326,7 @@ else:
             ticker_msg = f"{T('ticker_stable')} {days_since}{T('ticker_stable_j')} {palmares_count} {T('ticker_stable_ops')}"
             ticker_color = "#ff4d6d" if days_since >= 3 else "#00f2ff"
         except (ValueError, TypeError):
-            ticker_msg = f"BASE STABLE — {palmares_count} {T('ticker_stable_ops')}"
+            ticker_msg = f"{T('ticker_stable_fallback')} — {palmares_count} {T('ticker_stable_ops')}"
             ticker_color = "#00f2ff"
     else:
         ticker_msg = T("ticker_no_ops")
@@ -354,7 +354,7 @@ else:
         )
         diff_key, diff_xp, diff_color = DIFFICULTY_MAP[lang][diff_choice]
         st.session_state.mission_difficulty = {"key": diff_key, "xp": diff_xp}
-        st.markdown(f'<p style="font-size:0.75rem; font-family:monospace; color:{diff_color};">PROTOCOLE_{diff_key.upper()} | RÉCOMPENSE : +{diff_xp} XP</p>', unsafe_allow_html=True)
+        st.markdown(f'<p style="font-size:0.75rem; font-family:monospace; color:{diff_color};">PROTOCOLE_{diff_key.upper()} | {T("label_reward")} : +{diff_xp} XP</p>', unsafe_allow_html=True)
 
         st.markdown('<div class="mobile-cta">', unsafe_allow_html=True)
         col1, col2 = st.columns(2)
@@ -387,7 +387,7 @@ else:
         else:
             current_mode = st.session_state.get("mode")
             st.info(f"{T('proof_analyser_label')} : {(current_mode or '').upper()}")
-            proof = st.camera_input("CAPTURE") if current_mode == "camera" else st.file_uploader("FICHIER")
+            proof = st.camera_input(T("label_capture")) if current_mode == "camera" else st.file_uploader(T("label_file"))
 
             if proof:
                 img_p = Image.open(proof)
@@ -447,13 +447,13 @@ else:
                                     reject_prefix = "REJECTED" if current_lang == "en" else "REJETÉ"
                                     st.error(f"{reject_prefix} : {check_res.text}")
                         except Exception as e:
-                            st.error(f"ERREUR : {e}")
+                            st.error(f"{T('err_generic')} : {e}")
 
     # 3. SCAN DE ZONE
     else:
         diff_info = st.session_state.get("mission_difficulty", {"key": "moyen", "xp": 20})
         st.markdown(f"### [ {T('scan_title')} : {st.session_state.mode.upper()} ]")
-        source = st.camera_input("SCAN") if st.session_state.mode == "camera" else st.file_uploader("DATA")
+        source = st.camera_input(T("label_scan")) if st.session_state.mode == "camera" else st.file_uploader(T("label_data"))
 
         if source:
             img = Image.open(source)
@@ -479,4 +479,4 @@ else:
                             sync_save()
                             st.rerun()
                     except Exception as e:
-                        st.error(f"ERREUR : {e}")
+                        st.error(f"{T('err_generic')} : {e}")

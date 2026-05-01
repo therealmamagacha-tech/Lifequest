@@ -10,9 +10,9 @@ try:
     with open("style.css", "r") as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 except FileNotFoundError:
-    st.error("ERREUR : Fichier style.css introuvable.")
+    st.error(T("err_css_not_found"))
 except OSError as e:
-    st.error(f"ERREUR : Impossible de charger style.css ({e}).")
+    st.error(T("err_css_load").format(error=e))
 
 ensure_ui_defaults(st.session_state)
 inject_ui_overrides(st.session_state)
@@ -129,7 +129,7 @@ if palmares:
     sorted_pal = sorted(palmares, key=lambda x: x.get("date", ""), reverse=True)
 
     for entry in sorted_pal:
-        nom = entry.get("nom", "CONTRAT_INCONNU")
+        nom = entry.get("nom", T("palmares_unknown_contract"))
         date_str = entry.get("date", "")
         xp = entry.get("xp_gained", 0)
         zone = entry.get("zone", "general")
@@ -153,7 +153,7 @@ if palmares:
             date_obj = datetime.fromisoformat(date_str)
             date_display = date_obj.strftime("%d/%m/%Y — %Hh%M")
         except (ValueError, TypeError):
-            date_display = date_str or "DATE_INCONNUE"
+            date_display = date_str or T("palmares_unknown_date")
 
         st.markdown(f'''
             <div class="palmares-entry">

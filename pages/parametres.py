@@ -9,9 +9,9 @@ try:
     with open("style.css", "r", encoding="utf-8") as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 except FileNotFoundError:
-    st.error("ERREUR : Fichier style.css introuvable.")
+    st.error(T("err_css_not_found"))
 except OSError as e:
-    st.error(f"ERREUR : Impossible de charger style.css ({e}).")
+    st.error(T("err_css_load").format(error=e))
 
 ensure_ui_defaults(st.session_state)
 inject_ui_overrides(st.session_state)

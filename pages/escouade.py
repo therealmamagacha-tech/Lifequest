@@ -11,9 +11,9 @@ try:
     with open("style.css", "r") as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 except FileNotFoundError:
-    st.error("ERREUR : Fichier style.css introuvable.")
+    st.error(T("err_css_not_found"))
 except OSError as e:
-    st.error(f"ERREUR : Impossible de charger style.css ({e}).")
+    st.error(T("err_css_load").format(error=e))
 
 ensure_ui_defaults(st.session_state)
 inject_ui_overrides(st.session_state)
@@ -86,7 +86,7 @@ def render_agent_card(i, col_slot):
                 st.session_state.active_agent = nom
                 st.session_state.active_puissance = pwr
                 st.session_state.active_img = img
-                st.success(f"UNITÉ {nom} DÉPLOYÉE — Liaison établie.")
+                st.success(T("escouade_unit_deployed").format(name=nom))
                 st.rerun()
         else:
             # --- AGENT VERROUILLÉ ---
@@ -94,7 +94,7 @@ def render_agent_card(i, col_slot):
             st.markdown(f'''
                 <div class="archive-card archive-card--locked {tilt_class}">
                     <div class="archive-card__lock">{lock_icon}</div>
-                    <p class="archive-card__locked-text">REQUIS: LVL {i}</p>
+                    <p class="archive-card__locked-text">{T("escouade_required_lvl").format(level=i)}</p>
                 </div>
             ''', unsafe_allow_html=True)
             st.button(f"{T('btn_locked_unit')}{i}{T('btn_locked_suf')}", key=f"btn_locked_{i}", disabled=True)
