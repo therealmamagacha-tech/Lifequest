@@ -54,7 +54,6 @@ The concept is to transform your daily chores and objectives into top-secret inf
 
 ## 🎭 The Team
 Developed for the **Grizzly Hacks III** competition.
-*Theme: Gamification & Artificial Intelligence.*
 
 ---
 *“Terminal locked. Awaiting operator input...”*[cite: 6]
