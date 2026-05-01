@@ -112,4 +112,4 @@ with st.expander(T("archives_voir_plus")):
 
 # 4. NAVIGATION
 if st.button(T("archives_nav")):
-    st.switch_page("app.py")
+    st.switch_page("pages/hub.py")

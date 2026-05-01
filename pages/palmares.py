@@ -21,7 +21,7 @@ inject_ui_overrides(st.session_state)
 if not st.session_state.get("logged_in", False):
     st.warning(T("guard_login_required"))
     if st.button(T("btn_back_terminal")):
-        st.switch_page("app.py")
+        st.switch_page("pages/hub.py")
     st.stop()
 
 # 3. TITRE
@@ -176,4 +176,4 @@ else:
 # 6. NAVIGATION
 st.markdown("<br>", unsafe_allow_html=True)
 if st.button(T("btn_back_terminal")):
-    st.switch_page("app.py")
+    st.switch_page("pages/hub.py")

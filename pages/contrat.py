@@ -20,7 +20,7 @@ inject_ui_overrides(st.session_state)
 # On récupère le perso choisi dans les archives. Si rien, on met des valeurs de base.
 agent_nom = st.session_state.get('active_agent', "AUCUN_AGENT")
 agent_puissance = st.session_state.get('active_puissance', 10)
-agent_img = st.session_state.get('active_img', "https://i.ibb.co/L8p61mX/samurai-sprite.png")
+agent_img = st.session_state.get('active_img', "https://via.placeholder.com/120x120/03141d/00f2ff?text=NO_AGENT")
 
 st.markdown('<h1 class="main-title">CONTRAT_EN_COURS</h1>', unsafe_allow_html=True)
 
@@ -83,7 +83,7 @@ col_nav1, col_nav2 = st.columns(2)
 with col_nav1:
     st.markdown(f'<p style="margin:0 0 8px 0;">{icon_html("arrow-left", 14, "#00f2ff")}</p>', unsafe_allow_html=True)
     if st.button("RETOUR AU TERMINAL"):
-        st.switch_page("app.py")
+        st.switch_page("pages/hub.py")
 with col_nav2:
     st.markdown(f'<p style="margin:0 0 8px 0;">{icon_html("users", 14, "#00f2ff")}</p>', unsafe_allow_html=True)
     if st.button("ESCOUADE"):

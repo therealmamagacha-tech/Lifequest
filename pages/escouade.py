@@ -113,4 +113,4 @@ with st.expander(T("escouade_load")):
 
 # 4. NAVIGATION
 if st.button(T("escouade_nav")):
-    st.switch_page("app.py")
+    st.switch_page("pages/hub.py")

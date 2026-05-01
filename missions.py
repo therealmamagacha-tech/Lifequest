@@ -20,7 +20,7 @@ inject_ui_overrides(st.session_state)
 # On récupère le perso choisi dans les archives. Si rien, on met des valeurs de base.
 agent_nom = st.session_state.get('active_agent', "AUCUN_AGENT")
 agent_puissance = st.session_state.get('active_puissance', 10)
-agent_img = st.session_state.get('active_img', "https://i.ibb.co/L8p61mX/samurai-sprite.png")
+agent_img = st.session_state.get('active_img', "https://via.placeholder.com/120x120/03141d/00f2ff?text=NO_AGENT")
 
 st.markdown('<h1 class="main-title">CENTRE_D_OPÉRATIONS</h1>', unsafe_allow_html=True)
 

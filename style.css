@@ -190,7 +190,8 @@ div.stButton > button {
     font-size: clamp(0.9rem, 1.8vw, 1.05rem) !important;
     line-height: 1.2;
     padding: 0.75rem 1rem !important;
-    clip-path: polygon(10% 0%, 100% 0%, 100% 85%, 90% 100%, 0% 100%, 0% 15%);
+    clip-path: none;
+    border-radius: 12px;
     box-shadow: var(--glow-soft);
     transition: transform 0.2s ease, box-shadow 0.25s ease, background-color 0.25s ease, color 0.25s ease;
 }
@@ -258,7 +259,8 @@ div[data-testid="stTextInput"] p {
         min-height: 2.85rem !important;
         font-size: 0.9rem !important;
         padding: 0.65rem 0.85rem !important;
-        clip-path: polygon(6% 0%, 100% 0%, 100% 90%, 94% 100%, 0% 100%, 0% 10%);
+        clip-path: none;
+        border-radius: 10px;
     }
 
     /* Barre d'action sticky sur mobile pour les CTA places dans .mobile-cta */

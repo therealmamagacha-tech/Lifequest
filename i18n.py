@@ -3,7 +3,7 @@ import streamlit as st
 TRANSLATIONS = {
     "fr": {
         # === APP.PY ===
-        "page_title": "CORE-OS",
+        "page_title": "LIFEQUEST",
         "standby_mode": "[ STANDBY_MODE ]",
         "standby_desc": "Système CORE_OS en attente.<br>Initialisez la session ou enregistrez un opérateur.",
         "label_id": "IDENTIFIANT_OPÉRATEUR",
@@ -103,10 +103,16 @@ TRANSLATIONS = {
         "settings_apply": "APPLIQUER LES PARAMÈTRES",
         "settings_saved": "Paramètres enregistrés.",
         "guard_login_required": "ACCÈS REFUSÉ — Initialisez votre session depuis le terminal principal.",
+        "nav_hub": "HUB",
+        "nav_archives": "ARCHIVES",
+        "nav_contrat": "CONTRAT",
+        "nav_escouade": "ESCOUADE",
+        "nav_palmares": "PALMARÈS",
+        "nav_parametres": "PARAMÈTRES",
     },
     "en": {
         # === APP.PY ===
-        "page_title": "CORE-OS",
+        "page_title": "LIFEQUEST",
         "standby_mode": "[ STANDBY_MODE ]",
         "standby_desc": "CORE_OS system on standby.<br>Initialize session or register an operator.",
         "label_id": "OPERATOR_ID",
@@ -206,6 +212,12 @@ TRANSLATIONS = {
         "settings_apply": "APPLY SETTINGS",
         "settings_saved": "Settings saved.",
         "guard_login_required": "ACCESS DENIED — Initialize session from the main terminal.",
+        "nav_hub": "HUB",
+        "nav_archives": "ARCHIVES",
+        "nav_contrat": "CONTRACT",
+        "nav_escouade": "SQUAD",
+        "nav_palmares": "HALL OF FAME",
+        "nav_parametres": "SETTINGS",
     },
 }
 
