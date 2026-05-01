@@ -1,0 +1,689 @@
+/* --- POLICES & BASES --- */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Share+Tech+Mono&display=swap');
+
+:root {
+    --space-1: 8px;
+    --space-2: 12px;
+    --space-3: 16px;
+    --space-4: 24px;
+    --space-5: 32px;
+    --glow-soft: 0 0 12px rgba(0, 242, 255, 0.35);
+    --glow-strong: 0 0 22px rgba(0, 242, 255, 0.65);
+    --danger: #ff4d6d;
+}
+
+.lucide-inline {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* Force tous les textes secondaires Streamlit (souvent gris) en blanc */
+[data-testid="stCaptionContainer"],
+[data-testid="stCaptionContainer"] *,
+.stCaption,
+.stCaption *,
+[data-testid="stFormHelpText"],
+[data-testid="stFormHelpText"] * {
+    color: #ffffff !important;
+}
+
+/* Les textes de boutons désactivés sortent souvent en gris par défaut */
+div.stButton > button:disabled,
+div.stButton > button[disabled] {
+    color: #ffffff !important;
+}
+
+/* Animation de la grille de fond */
+@keyframes gridMove { 
+    from { background-position: 0 0, 0 0, 0 0; } 
+    to { background-position: 0 0, 35px 35px, 35px 35px; } 
+}
+
+/* Pulsation néon du titre */
+@keyframes neonPulse { 
+    0%, 100% { text-shadow: 0 0 8px #00f2ff; border-color: #00f2ff; box-shadow: 0 0 4px rgba(0,242,255,0.2); } 
+    50% { text-shadow: 0 0 16px #00f2ff; border-color: #fff; box-shadow: 0 0 12px rgba(0,242,255,0.45); } 
+}
+
+/* Apparition en douceur */
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+/* --- STRUCTURE PRINCIPALE --- */
+.stApp {
+    background-color: #010409;
+    background-image: radial-gradient(circle at 50% 50%, rgba(0,242,255,0.15) 0%, transparent 80%),
+                      linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+    background-size: 100% 100%, 35px 35px, 35px 35px;
+    color: #00f2ff; 
+    font-family: 'Share Tech Mono', monospace;
+    animation: gridMove 4s linear infinite;
+}
+
+/* Sidebar & Header */
+[data-testid="stSidebar"] { 
+    background-color: #000000 !important; 
+    border-right: 2px solid #00f2ff; 
+}
+
+/* Navigation multipage: remplace le look natif des boutons du menu */
+[data-testid="stSidebarNav"] {
+    padding-top: 0.6rem;
+}
+
+[data-testid="stSidebarNav"] ul {
+    gap: 0.55rem;
+}
+
+[data-testid="stSidebarNav"] ul li a {
+    border: 1px solid rgba(0, 242, 255, 0.38);
+    background: linear-gradient(135deg, rgba(0, 242, 255, 0.14), rgba(0, 18, 30, 0.85));
+    color: #ffffff !important;
+    border-radius: 10px;
+    min-height: 2.65rem;
+    padding: 0.4rem 0.75rem;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.88rem;
+    letter-spacing: 0.4px;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    box-shadow: inset 0 0 12px rgba(0, 242, 255, 0.08);
+}
+
+[data-testid="stSidebarNav"] ul li,
+[data-testid="stSidebarNav"] ul li * {
+    opacity: 1 !important;
+}
+
+[data-testid="stSidebarNav"] ul li a span,
+[data-testid="stSidebarNav"] ul li a p,
+[data-testid="stSidebarNav"] ul li a div {
+    color: #ffffff !important;
+}
+
+[data-testid="stSidebarNav"] ul li a:hover {
+    transform: translateX(2px);
+    border-color: rgba(0, 242, 255, 0.88);
+    background: linear-gradient(135deg, rgba(0, 242, 255, 0.3), rgba(0, 28, 48, 0.95));
+    box-shadow: 0 0 16px rgba(0, 242, 255, 0.24);
+}
+
+[data-testid="stSidebarNav"] ul li a[aria-current="page"] {
+    border: 1px solid #00f2ff;
+    background: linear-gradient(135deg, rgba(0, 242, 255, 0.4), rgba(0, 35, 62, 0.95));
+    color: #ffffff !important;
+    box-shadow: 0 0 18px rgba(0, 242, 255, 0.33);
+}
+
+header, [data-testid="stHeader"] { 
+    background-color: rgba(0,0,0,0) !important; 
+}
+
+/* --- HUD & TEXTES --- */
+.main-title { 
+    font-family: 'Orbitron'; 
+    font-size: 4.5rem; 
+    text-align: center; 
+    margin: 0 0 var(--space-3) 0; 
+    animation: neonPulse 2s infinite ease-in-out; 
+}
+
+.manual-frame, .level-card { 
+    border: 2px solid #00f2ff; 
+    background-color: #000000 !important; 
+    text-align: center; 
+    animation: fadeIn 1s ease-out; 
+}
+
+.manual-frame { 
+    padding: var(--space-5); 
+    margin: var(--space-4) auto; 
+    max-width: 800px; 
+    clip-path: polygon(5% 0%, 100% 0%, 100% 90%, 95% 100%, 0% 100%, 0% 10%); 
+}
+
+.level-card { 
+    padding: 15px; 
+    margin-bottom: 20px; 
+    clip-path: polygon(0 0, 100% 0, 100% 75%, 85% 100%, 0 100%); 
+}
+
+.level-val { 
+    font-family: 'Orbitron'; 
+    font-size: 2.5rem; 
+    font-weight: 900; 
+    color: #fff; 
+    text-shadow: 0 0 10px #00f2ff; 
+}
+
+/* --- BOITE DE MISSION IA --- */
+.mission-box { 
+    border-left: 5px solid #00f2ff; 
+    background: rgba(0, 242, 255, 0.1); 
+    padding: var(--space-4); 
+    margin-top: var(--space-4); 
+    font-family: 'Share Tech Mono'; 
+    animation: fadeIn 0.5s ease-in;
+    white-space: pre-wrap;
+    color: #fff;
+    box-shadow: inset 0 0 10px rgba(0, 242, 255, 0.12);
+}
+
+.panel-shell {
+    width: min(100%, 820px);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- BOUTONS CYBERPUNK --- */
+div.stButton > button {
+    background: rgba(0, 20, 40, 0.9) !important; 
+    border: 2px solid #00f2ff !important;
+    color: #00f2ff !important; 
+    min-height: 3.25rem !important;
+    height: auto !important;
+    width: 100% !important;
+    font-family: 'Orbitron' !important; 
+    font-size: clamp(0.9rem, 1.8vw, 1.05rem) !important;
+    line-height: 1.2;
+    padding: 0.75rem 1rem !important;
+    clip-path: none;
+    border-radius: 12px;
+    box-shadow: var(--glow-soft);
+    transition: transform 0.2s ease, box-shadow 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+}
+
+div.stButton > button:hover { 
+    background: #00f2ff !important; 
+    color: #000 !important; 
+    box-shadow: var(--glow-strong) !important; 
+    transform: translateY(-2px); 
+}
+
+/* Variante primaire: CTA principal */
+div.stButton > button[kind="primary"] {
+    background: linear-gradient(135deg, rgba(0, 242, 255, 0.18), rgba(0, 20, 40, 0.95)) !important;
+    border-color: #00f2ff !important;
+    color: #eaffff !important;
+}
+
+/* Variante secondaire: actions de navigation et actions critiques */
+div.stButton > button[kind="secondary"] {
+    background: rgba(35, 0, 10, 0.85) !important;
+    border-color: var(--danger) !important;
+    color: #ffd5dd !important;
+    box-shadow: 0 0 10px rgba(255, 77, 109, 0.35);
+}
+
+div.stButton > button[kind="secondary"]:hover {
+    background: var(--danger) !important;
+    color: #150208 !important;
+    box-shadow: 0 0 18px rgba(255, 77, 109, 0.55) !important;
+}
+
+div.stButton > button:disabled,
+div.stButton > button[disabled] {
+    opacity: 1 !important;
+    cursor: not-allowed !important;
+    filter: grayscale(0.25);
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+div.stButton > button:focus-visible {
+    outline: 2px solid #ffffff !important;
+    outline-offset: 2px;
+}
+
+/* Force les labels de champs (login/inputs) en blanc */
+[data-testid="stWidgetLabel"],
+[data-testid="stWidgetLabel"] *,
+label[data-testid="stWidgetLabel"],
+div[data-testid="stTextInput"] label,
+div[data-testid="stTextInput"] label *,
+div[data-testid="stTextInput"] p {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* Responsive: boutons encore plus stables sur mobile */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: clamp(2rem, 10vw, 3rem);
+    }
+
+    div.stButton > button {
+        min-height: 2.85rem !important;
+        font-size: 0.9rem !important;
+        padding: 0.65rem 0.85rem !important;
+        clip-path: none;
+        border-radius: 10px;
+    }
+
+    /* Barre d'action sticky sur mobile pour les CTA places dans .mobile-cta */
+    .mobile-cta {
+        position: sticky;
+        bottom: 0;
+        z-index: 20;
+        background: linear-gradient(to top, rgba(1, 4, 9, 0.95), rgba(1, 4, 9, 0.65));
+        padding: var(--space-2);
+        margin-top: var(--space-3);
+        backdrop-filter: blur(4px);
+    }
+
+    .manual-frame,
+    .login-frame,
+    .mission-box {
+        width: min(100%, 96vw);
+    }
+}
+
+/* --- MODULE DE SCANNER AVANCÉ (CORRIGÉ) --- */
+[data-testid="stImage"] {
+    position: relative;
+    padding: 12px;
+    background: rgba(0, 242, 255, 0.05);
+    /* Forme biseautée du réceptacle */
+    clip-path: polygon(15% 0, 100% 0, 100% 85%, 85% 100%, 0 100%, 0 15%);
+    border: 1px solid rgba(0, 242, 255, 0.3);
+    display: inline-block;
+}
+
+[data-testid="stImage"] img {
+    /* CORRECTION ICI : Le cadre néon est maintenant Cyan (#00f2ff) */
+    border: 2px solid #00f2ff !important;
+    box-shadow: 0 0 25px rgba(0, 242, 255, 0.6) !important;
+    border-radius: 4px;
+    /* Laisse Streamlit ou le style inline definir la largeur demandee */
+    width: auto !important;
+    max-width: none !important;
+    height: auto;
+    /* CORRECTION ICI : J'ai enlevé les filtres de couleur bizarres. L'image est normale, juste un peu plus nette. */
+    filter: brightness(1.05) contrast(1.1); 
+    transition: all 0.4s ease;
+}
+
+/* Effet au survol du scanneur */
+[data-testid="stImage"]:hover img {
+    /* Légère augmentation de la luminosité au survol pour le feedback */
+    filter: brightness(1.2) contrast(1.15);
+    transform: scale(1.03);
+    box-shadow: 0 0 35px rgba(0, 242, 255, 0.9) !important;
+}
+
+/* Signature technique sous l'image */
+[data-testid="stImage"]::after {
+    content: "SIGNAL_STRENGTH: NOMINAL // FEED_V2.0";
+    display: block;
+    font-size: 7px;
+    color: #00f2ff; /* Texte technique en Cyan */
+    text-align: center;
+    margin-top: 8px;
+    letter-spacing: 1px;
+    opacity: 0.7;
+}
+/* Styles pour les entrées de texte */
+.stTextInput input {
+    background-color: #000 !important;
+    color: #00f2ff !important;
+    border: 1px solid #00f2ff !important;
+    font-family: 'Share Tech Mono', monospace !important;
+}
+
+.login-frame {
+    border: 2px solid #00f2ff;
+    padding: var(--space-4);
+    background: rgba(0, 242, 255, 0.05);
+    clip-path: polygon(5% 0%, 100% 0%, 100% 80%, 95% 100%, 0% 100%, 0% 20%);
+    margin: var(--space-4) auto;
+    max-width: 820px;
+    text-align: center;
+    color: #00f2ff;
+    font-family: 'Share Tech Mono', monospace;
+    box-shadow: inset 0 0 10px rgba(0, 242, 255, 0.18);
+}
+/* Personnalisation de la barre de progression Streamlit */
+div[data-baseweb="progress-bar"] > div {
+    background-color: #00f2ff !important;
+    box-shadow: 0 0 10px #00f2ff;
+}
+
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.avatar-card {
+    border: 1px solid #00f2ff;
+    background: rgba(0, 242, 255, 0.05);
+    padding: 15px;
+    text-align: center;
+    clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+}
+
+.locked {
+    filter: grayscale(1) blur(2px);
+    opacity: 0.5;
+    border: 1px dashed #ff0055 !important;
+}
+
+.avatar-name {
+    font-family: 'Orbitron';
+    font-size: 0.8rem;
+    margin-top: 10px;
+    color: #00f2ff;
+}
+
+/* --- ARCHIVES: CARTES AGENTS --- */
+.archive-card {
+    min-height: 380px;
+    margin-bottom: 20px;
+    padding: 18px 14px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid rgba(0, 242, 255, 0.35);
+    background: linear-gradient(180deg, rgba(0, 242, 255, 0.14), rgba(0, 12, 20, 0.72));
+    box-shadow: inset 0 0 18px rgba(0, 242, 255, 0.1), 0 0 12px rgba(0, 242, 255, 0.16);
+    backdrop-filter: blur(2px);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.archive-card--tilt-left {
+    transform: none;
+}
+
+.archive-card--tilt-right {
+    transform: none;
+}
+
+.archive-card--unlocked:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0, 242, 255, 0.9);
+    box-shadow: inset 0 0 24px rgba(0, 242, 255, 0.15), 0 0 20px rgba(0, 242, 255, 0.35);
+}
+
+.archive-card--locked {
+    opacity: 0.42;
+    filter: grayscale(1);
+    background: linear-gradient(180deg, rgba(20, 30, 40, 0.4), rgba(5, 10, 14, 0.75));
+}
+
+.archive-card__id {
+    margin: 0;
+    font-size: 0.62rem;
+    color: rgba(0, 242, 255, 0.92);
+    letter-spacing: 0.7px;
+}
+
+.archive-card__portrait {
+    position: relative;
+    overflow: hidden;
+    width: 146px;
+    height: 146px;
+    margin: 18px auto 14px;
+    left: auto;
+    transform: none;
+    border: 1px solid rgba(0, 242, 255, 0.45);
+    background:
+        radial-gradient(circle at 50% 45%, rgba(0, 242, 255, 0.12), rgba(0, 10, 16, 0.82)),
+        linear-gradient(135deg, rgba(0, 242, 255, 0.09), rgba(0, 0, 0, 0));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 16px rgba(0, 242, 255, 0.2);
+}
+
+.archive-card__portrait img {
+    display: block;
+    margin: 0 auto;
+    object-position: center center;
+}
+
+.archive-card__portrait::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(
+        to bottom,
+        rgba(0, 242, 255, 0.14) 0px,
+        rgba(0, 242, 255, 0.14) 1px,
+        rgba(0, 0, 0, 0) 2px,
+        rgba(0, 0, 0, 0) 4px
+    );
+    opacity: 0.22;
+}
+
+.archive-card__name {
+    margin: 10px 0 8px;
+    font-family: 'Orbitron';
+    font-size: 0.95rem;
+    color: #ffffff;
+    letter-spacing: 0.8px;
+}
+
+.archive-card__power {
+    display: inline-block;
+    margin: 0;
+    padding: 4px 10px;
+    border: 1px solid rgba(0, 255, 157, 0.5);
+    background: rgba(0, 255, 157, 0.08);
+    color: #8effca;
+    font-family: 'Share Tech Mono';
+    font-size: 0.78rem;
+}
+
+.archive-card__lock {
+    margin-top: 72px;
+    font-size: 2.4rem;
+    opacity: 0.9;
+}
+
+.archive-card__locked-text {
+    margin-top: 52px;
+    font-family: 'Orbitron';
+    font-size: 0.78rem;
+    color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    .archive-card {
+        min-height: 330px;
+        padding: 14px 10px;
+        transform: none;
+    }
+
+    .archive-card__portrait {
+        width: 126px;
+        height: 126px;
+        margin-top: 14px;
+        left: auto;
+        transform: none;
+    }
+
+    .archive-card__lock {
+        margin-top: 56px;
+    }
+}
+
+/* =============================================
+   PALMARÈS — Badges & Entrées historique
+   ============================================= */
+
+/* Stat badge (compteurs en haut du palmarès) */
+.stat-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #00f2ff;
+    border-radius: 6px;
+    padding: 14px 10px;
+    background: rgba(0, 242, 255, 0.04);
+    text-align: center;
+    margin-bottom: 8px;
+    animation: fadeIn 0.4s ease;
+}
+.stat-badge__val {
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem;
+    color: #00f2ff;
+    line-height: 1;
+}
+.stat-badge__label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: #ffffff;
+    margin-top: 6px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Badge trophée par zone */
+.trophy-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #00f2ff;
+    border-radius: 8px;
+    padding: 12px 8px;
+    background: rgba(0,0,0,0.4);
+    text-align: center;
+    transition: box-shadow 0.25s ease;
+    margin-bottom: 8px;
+}
+.trophy-badge:hover {
+    box-shadow: var(--glow-soft);
+}
+
+/* Entrée historique palmarès */
+.palmares-entry {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px;
+    border: 1px solid rgba(0, 242, 255, 0.15);
+    border-radius: 6px;
+    background: rgba(0, 242, 255, 0.03);
+    margin-bottom: 8px;
+    animation: fadeIn 0.3s ease;
+    transition: background 0.2s ease;
+}
+.palmares-entry:hover {
+    background: rgba(0, 242, 255, 0.07);
+}
+.palmares-entry__icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+.palmares-entry__info {
+    flex: 1;
+    min-width: 0;
+}
+.palmares-entry__name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    color: #ffffff;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.palmares-entry__date {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: #ffffff;
+    margin: 2px 0 0;
+}
+.palmares-entry__xp {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* =============================================
+   SUCCÈS AGENT (achievement badges)
+   ============================================= */
+@keyframes achieveGlow {
+    0%, 100% { box-shadow: 0 0 8px rgba(255, 183, 0, 0.4); }
+    50%       { box-shadow: 0 0 18px rgba(255, 183, 0, 0.8); }
+}
+
+.achievement-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 14px 8px 10px;
+    background: rgba(0, 0, 0, 0.5);
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.25s ease;
+    margin-bottom: 10px;
+    min-height: 90px;
+}
+.achievement-badge[style*="opacity:1"] {
+    animation: achieveGlow 2.5s ease-in-out infinite;
+}
+.achievement-badge:hover {
+    transform: translateY(-2px);
+}
+
+/* =============================================
+   RADIO DIFFICULTÉ — style cyberpunk
+   ============================================= */
+div[data-testid="stRadio"] > label {
+    font-family: 'Orbitron', monospace !important;
+    font-size: 0.78rem !important;
+    color: #00f2ff !important;
+    letter-spacing: 0.5px;
+}
+
+div[data-testid="stRadio"] > div {
+    gap: 0.5rem;
+}
+
+div[data-testid="stRadio"] label span {
+    font-family: 'Share Tech Mono', monospace !important;
+    font-size: 0.82rem !important;
+    color: #ffffff !important;
+}
+
+/* Toggles (st.toggle) labels */
+div[data-testid="stToggle"] label,
+div[data-testid="stToggle"] label *,
+div[data-testid="stToggle"] p {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* Force blanc : tous les textes p/span/div qui restent gris dans Streamlit */
+.stApp p,
+.stApp span,
+.stApp label,
+[class*="st-"] p,
+[class*="st-"] span {
+    color: #ffffff !important;
+}
+
+/* Rétablir cyan pour les éléments qui doivent le rester */
+.main-title,
+.archive-card__id,
+.archive-card__power,
+.stat-badge__val,
+.avatar-name,
+.mission-box h3,
+[data-testid="stSidebarNav"] ul li a,
+[data-testid="stSidebarNav"] ul li a span {
+    color: inherit !important;
+}
