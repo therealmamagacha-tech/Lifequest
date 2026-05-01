@@ -181,12 +181,6 @@ else:
         st.progress(progress_to_next)
 
         st.markdown("---")
-        if st.button(T("btn_escouade"), type="primary"):
-            st.switch_page("pages/escouade.py")
-        if st.button(T("btn_palmares"), type="primary"):
-            st.switch_page("pages/palmares.py")
-        st.markdown("---")
-        st.caption("Zone critique")
         if st.button(T("btn_disconnect"), type="secondary"):
             sync_save()
             st.session_state.logged_in = False

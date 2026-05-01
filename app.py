@@ -14,7 +14,6 @@ _T = lambda key: TRANSLATIONS.get(lang, TRANSLATIONS["fr"]).get(key, key)
 # Navigation avec labels traduits dynamiquement
 pg = st.navigation([
     st.Page("pages/hub.py",        title=_T("nav_hub")),
-    st.Page("pages/archives.py",   title=_T("nav_archives")),
     st.Page("pages/contrat.py",    title=_T("nav_contrat")),
     st.Page("pages/escouade.py",   title=_T("nav_escouade")),
     st.Page("pages/palmares.py",   title=_T("nav_palmares")),

@@ -656,4 +656,34 @@ div[data-testid="stRadio"] > div {
 div[data-testid="stRadio"] label span {
     font-family: 'Share Tech Mono', monospace !important;
     font-size: 0.82rem !important;
+    color: #ffffff !important;
+}
+
+/* Toggles (st.toggle) labels */
+div[data-testid="stToggle"] label,
+div[data-testid="stToggle"] label *,
+div[data-testid="stToggle"] p {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* Force blanc : tous les textes p/span/div qui restent gris dans Streamlit */
+.stApp p,
+.stApp span,
+.stApp label,
+[class*="st-"] p,
+[class*="st-"] span {
+    color: #ffffff !important;
+}
+
+/* Rétablir cyan pour les éléments qui doivent le rester */
+.main-title,
+.archive-card__id,
+.archive-card__power,
+.stat-badge__val,
+.avatar-name,
+.mission-box h3,
+[data-testid="stSidebarNav"] ul li a,
+[data-testid="stSidebarNav"] ul li a span {
+    color: inherit !important;
 }
