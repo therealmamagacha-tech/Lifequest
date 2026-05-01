@@ -1,3 +1,4 @@
-streamlit
+streamlit>=1.36
 google-generativeai
-python-dotenvs
+Pillow
+python-dotenv
