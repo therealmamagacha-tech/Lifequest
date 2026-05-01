@@ -6,6 +6,7 @@ import os
 import auth  # Ton fichier auth.py doit être présent dans le dossier
 from i18n import T, DIFFICULTY_MAP, BADGES_DEF, check_badges
 from lucide import icon_html
+from ui_preferences import ensure_ui_defaults, inject_ui_overrides
 
 
 def load_dotenv_file(path=".env"):
@@ -49,6 +50,9 @@ except FileNotFoundError:
 except OSError as e:
     st.error(f"ERREUR : Impossible de charger style.css ({e}).")
 
+ensure_ui_defaults(st.session_state)
+inject_ui_overrides(st.session_state)
+
 # --- INITIALISATION SESSION ---
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
@@ -72,6 +76,10 @@ def sync_save():
             "last_mission_date": st.session_state.get("last_mission_date", None),
             "palmares": st.session_state.get("palmares", []),
             "badges": st.session_state.get("badges", []),
+            "lang": st.session_state.get("lang", "fr"),
+            "ui_animations": st.session_state.get("ui_animations", True),
+            "ui_high_contrast": st.session_state.get("ui_high_contrast", False),
+            "ui_sound": st.session_state.get("ui_sound", False),
         }
         auth.save_user(st.session_state.username, data)
 
@@ -123,6 +131,7 @@ if not st.session_state.logged_in:
                         st.session_state.palmares = []
                     if "badges" not in st.session_state:
                         st.session_state.badges = []
+                    ensure_ui_defaults(st.session_state)
                     st.rerun()
                 else:
                     st.error(T("err_wrong_creds"))
@@ -139,6 +148,8 @@ if not st.session_state.logged_in:
                             "mission_active": False, "mission_text": "",
                             "history": [], "streak": 0,
                             "last_mission_date": None, "palmares": [], "badges": [],
+                            "lang": "fr", "ui_animations": True,
+                            "ui_high_contrast": False, "ui_sound": False,
                         }
                         auth.save_user(user_input, new_data)
                         st.session_state.update(new_data)

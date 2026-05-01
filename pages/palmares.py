@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 from i18n import T, BADGES_DEF
 from lucide import icon_html
+from ui_preferences import ensure_ui_defaults, inject_ui_overrides
 
 # 1. STYLE
 try:
@@ -13,9 +14,12 @@ except FileNotFoundError:
 except OSError as e:
     st.error(f"ERREUR : Impossible de charger style.css ({e}).")
 
+ensure_ui_defaults(st.session_state)
+inject_ui_overrides(st.session_state)
+
 # 2. GARDE : connexion requise
 if not st.session_state.get("logged_in", False):
-    st.warning("ACCÈS REFUSÉ — Initialisez votre session depuis le terminal principal.")
+    st.warning(T("guard_login_required"))
     if st.button(T("btn_back_terminal")):
         st.switch_page("app.py")
     st.stop()

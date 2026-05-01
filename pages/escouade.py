@@ -4,6 +4,7 @@ import base64  # AJOUTÉ pour lire tes images locales
 import os      # AJOUTÉ pour vérifier tes fichiers
 from i18n import T
 from lucide import icon_html
+from ui_preferences import ensure_ui_defaults, inject_ui_overrides
 
 # 1. STYLE ET CONFIG
 try:
@@ -13,6 +14,9 @@ except FileNotFoundError:
     st.error("ERREUR : Fichier style.css introuvable.")
 except OSError as e:
     st.error(f"ERREUR : Impossible de charger style.css ({e}).")
+
+ensure_ui_defaults(st.session_state)
+inject_ui_overrides(st.session_state)
 
 # On récupère le niveau actuel du joueur (app.py l'initialise à 1)
 user_lvl = st.session_state.get('lvl', 1)

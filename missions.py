@@ -2,6 +2,7 @@ import streamlit as st
 import random
 import time
 from lucide import icon_html
+from ui_preferences import ensure_ui_defaults, inject_ui_overrides
 
 # 1. STYLE (On garde ton identité visuelle)
 try:
@@ -11,6 +12,9 @@ except FileNotFoundError:
     st.error("ERREUR : Fichier style.css introuvable.")
 except OSError as e:
     st.error(f"ERREUR : Impossible de charger style.css ({e}).")
+
+ensure_ui_defaults(st.session_state)
+inject_ui_overrides(st.session_state)
 
 # 2. RÉCUPÉRATION DES INFOS DE L'AGENT
 # On récupère le perso choisi dans les archives. Si rien, on met des valeurs de base.
