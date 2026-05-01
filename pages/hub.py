@@ -145,10 +145,15 @@ if not st.session_state.logged_in:
                     st.error(T("err_wrong_creds"))
         with c2:
             if st.button(T("btn_register"), type="primary", disabled=not can_auth):
-                if len(user_input) > 2 and len(pass_input) > 3:
-                    if auth.user_exists(user_input):
-                        st.warning(T("warn_already_exists"))
-                    else:
+                import re as _re
+                if not _re.match(r'^[a-zA-Z0-9_\-]{3,32}$', user_input):
+                    st.error(T("err_invalid_username"))
+                elif len(pass_input) <= 3:
+                    st.error(T("err_short_creds"))
+                elif auth.user_exists(user_input):
+                    st.warning(T("warn_already_exists"))
+                else:
+                    try:
                         pwd_h = auth.hash_password(pass_input)
                         new_data = {
                             "password": pwd_h,
@@ -165,8 +170,8 @@ if not st.session_state.logged_in:
                         st.session_state.username = user_input
                         st.session_state.logged_in = True
                         st.rerun()
-                else:
-                    st.error(T("err_short_creds"))
+                    except Exception as _e:
+                        st.error(f"{T('err_register_fail')} ({_e})")
         st.markdown('</div>', unsafe_allow_html=True)
 
 # --- INTERFACE DE JEU (APRÈS CONNEXION) ---
