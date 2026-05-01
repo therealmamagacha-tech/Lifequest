@@ -22,17 +22,21 @@ agent_nom = st.session_state.get('active_agent', "AUCUN_AGENT")
 agent_puissance = st.session_state.get('active_puissance', 10)
 agent_img = st.session_state.get('active_img', "https://via.placeholder.com/120x120/03141d/00f2ff?text=NO_AGENT")
 
-st.markdown('<h1 class="main-title">CONTRAT_EN_COURS</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-title" style="font-size:clamp(1.2rem,5vw,2.5rem); word-break:break-word;">CONTRAT EN COURS</h1>', unsafe_allow_html=True)
 
 # 3. INTERFACE DE MISSION
 col1, col2 = st.columns([1, 1.5])
 
 with col1:
     # Rappel de l'agent actif dans une login-frame
+    has_agent = agent_nom != "AUCUN_AGENT"
+    agent_visual = f'<img src="{agent_img}" style="width:80px; image-rendering:pixelated;">'\
+        if has_agent else \
+        '<div style="width:80px;height:80px;margin:auto;border:2px dashed #00f2ff;border-radius:8px;display:flex;align-items:center;justify-content:center;"><span style=\"color:#00f2ff;font-size:1.5rem;\">?</span></div>'
     st.markdown(f'''
         <div class="login-frame panel-shell" style="text-align:center;">
-            <p style="color:#00f2ff; font-size:0.8rem;">UNITÉ_DÉPLOYÉE</p>
-            <img src="{agent_img}" style="width:80px; image-rendering:pixelated;">
+            <p style="color:#00f2ff; font-size:0.8rem;">UNITÉ DÉPLOYÉE</p>
+            {agent_visual}
             <h3 style="font-family:Orbitron; font-size:0.9rem;">{agent_nom}</h3>
             <p style="color:#00ff00; font-family:monospace;">PWR: {agent_puissance}</p>
         </div>
