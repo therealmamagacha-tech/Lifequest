@@ -2,6 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 from PIL import Image
 import hashlib
+import html
 import os
 import auth
 from i18n import T, DIFFICULTY_MAP, BADGES_DEF, check_badges
@@ -164,7 +165,7 @@ else:
 
         st.markdown(f'''
             <div class="level-card">
-                <small>{T('sidebar_operateur')}: {st.session_state.username.upper()}</small><br>
+                <small>{T('sidebar_operateur')}: {html.escape(st.session_state.username.upper())}</small><br>
                 <span class="level-val">{T('sidebar_rang')}{st.session_state.lvl}</span><br>
                 <span style="font-size:0.75rem; color:{streak_color}; font-family:monospace;">{streak_label}</span>
             </div>
