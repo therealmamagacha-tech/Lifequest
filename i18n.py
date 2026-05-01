@@ -90,7 +90,7 @@ TRANSLATIONS = {
         "escouade_load": "CHARGER UNITÉS SUIVANTES",
         "escouade_nav": "RETOUR AU TERMINAL",
         # === PARAMETRES ===
-        "settings_title": "PARAMÈTRES_UI",
+        "settings_title": "PARAMÈTRE",
         "settings_subtitle": "Personnalisez l'interface et l'expérience.",
         "settings_language": "LANGUE",
         "settings_language_label": "Choisir la langue",
@@ -193,7 +193,7 @@ TRANSLATIONS = {
         "escouade_load": "LOAD MORE UNITS",
         "escouade_nav": "BACK TO TERMINAL",
         # === SETTINGS ===
-        "settings_title": "UI_SETTINGS",
+        "settings_title": "SETTINGS",
         "settings_subtitle": "Customize interface and experience.",
         "settings_language": "LANGUAGE",
         "settings_language_label": "Select language",

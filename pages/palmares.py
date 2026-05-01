@@ -25,7 +25,10 @@ if not st.session_state.get("logged_in", False):
     st.stop()
 
 # 3. TITRE
-st.markdown(f'<h1 class="main-title">{T("palmares_title")}</h1>', unsafe_allow_html=True)
+st.markdown(
+    f'<h1 class="main-title" style="margin-top: 18px; margin-bottom: 28px;">{T("palmares_title")}</h1>',
+    unsafe_allow_html=True,
+)
 
 palmares = st.session_state.get("palmares", [])
 
