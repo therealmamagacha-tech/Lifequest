@@ -114,7 +114,7 @@ if not st.session_state.logged_in:
 
     st.markdown(f'''
         <div class="login-frame">
-            <h3 style="margin:0; letter-spacing:3px; color:#00f2ff; font-family:Orbitron;">{T("standby_mode")}</h3>
+            <h3 style="margin:0; letter-spacing:2px; color:#00f2ff; font-family:Orbitron; font-size:clamp(0.9rem, 4vw, 1.4rem);">{T("standby_mode")}</h3>
             <p style="margin:15px 0 0 0; font-size:1rem; opacity:0.9; line-height:1.5;">
                 {T("standby_desc")}
             </p>

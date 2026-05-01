@@ -252,7 +252,7 @@ div[data-testid="stTextInput"] p {
 /* Responsive: boutons encore plus stables sur mobile */
 @media (max-width: 768px) {
     .main-title {
-        font-size: clamp(2rem, 10vw, 3rem);
+        font-size: clamp(1.2rem, 7vw, 2rem);
     }
 
     div.stButton > button {
