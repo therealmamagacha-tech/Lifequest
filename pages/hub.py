@@ -70,6 +70,13 @@ for key, value in SESSION_DEFAULTS.items():
     if key not in st.session_state:
         st.session_state[key] = value.copy() if isinstance(value, (list, dict)) else value
 
+
+def ensure_session_defaults():
+    """Re-injecte les clés manquantes pour éviter les crashs sur anciens profils."""
+    for key, value in SESSION_DEFAULTS.items():
+        if key not in st.session_state:
+            st.session_state[key] = value.copy() if isinstance(value, (list, dict)) else value
+
 def get_image_hash(img):
     return hashlib.md5(img.tobytes()).hexdigest()
 
@@ -123,26 +130,20 @@ if not st.session_state.logged_in:
         c1, c2 = st.columns(2)
         with c1:
             if st.button(T("btn_login"), type="primary", disabled=not can_auth):
-                data = auth.load_user(user_input, pass_input)
-                if data:
-                    st.session_state.update(data)
-                    st.session_state.username = user_input
-                    st.session_state.logged_in = True
-                    st.session_state.waiting_for_proof = False
-                    if "streak" not in st.session_state:
-                        st.session_state.streak = 0
-                    if "last_mission_date" not in st.session_state:
-                        st.session_state.last_mission_date = None
-                    if "palmares" not in st.session_state:
-                        st.session_state.palmares = []
-                    if "badges" not in st.session_state:
-                        st.session_state.badges = []
-                    if "mission_difficulty" not in st.session_state:
-                        st.session_state.mission_difficulty = {"key": "moyen", "xp": 20}
-                    ensure_ui_defaults(st.session_state)
-                    st.rerun()
-                else:
-                    st.error(T("err_wrong_creds"))
+                try:
+                    data = auth.load_user(user_input, pass_input)
+                    if data:
+                        st.session_state.update(data)
+                        st.session_state.username = user_input
+                        st.session_state.logged_in = True
+                        st.session_state.waiting_for_proof = False
+                        ensure_session_defaults()
+                        ensure_ui_defaults(st.session_state)
+                        st.rerun()
+                    else:
+                        st.error(T("err_wrong_creds"))
+                except Exception as _e:
+                    st.error(f"{T('err_register_fail')} ({_e})")
         with c2:
             if st.button(T("btn_register"), type="primary", disabled=not can_auth):
                 import re as _re
@@ -150,26 +151,28 @@ if not st.session_state.logged_in:
                     st.error(T("err_invalid_username"))
                 elif len(pass_input) <= 3:
                     st.error(T("err_short_creds"))
-                elif auth.user_exists(user_input):
-                    st.warning(T("warn_already_exists"))
                 else:
                     try:
-                        pwd_h = auth.hash_password(pass_input)
-                        new_data = {
-                            "password": pwd_h,
-                            "xp": 0, "lvl": 1, "mode": None,
-                            "mission_active": False, "mission_text": "",
-                            "history": [], "streak": 0,
-                            "last_mission_date": None, "palmares": [], "badges": [],
-                            "lang": "fr", "ui_animations": True,
-                            "ui_high_contrast": False, "ui_sound": False,
-                            "mission_difficulty": {"key": "moyen", "xp": 20},
-                        }
-                        auth.save_user(user_input, new_data)
-                        st.session_state.update(new_data)
-                        st.session_state.username = user_input
-                        st.session_state.logged_in = True
-                        st.rerun()
+                        if auth.user_exists(user_input):
+                            st.warning(T("warn_already_exists"))
+                        else:
+                            pwd_h = auth.hash_password(pass_input)
+                            new_data = {
+                                "password": pwd_h,
+                                "xp": 0, "lvl": 1, "mode": None,
+                                "mission_active": False, "mission_text": "",
+                                "history": [], "streak": 0,
+                                "last_mission_date": None, "palmares": [], "badges": [],
+                                "lang": "fr", "ui_animations": True,
+                                "ui_high_contrast": False, "ui_sound": False,
+                                "mission_difficulty": {"key": "moyen", "xp": 20},
+                            }
+                            auth.save_user(user_input, new_data)
+                            st.session_state.update(new_data)
+                            st.session_state.username = user_input
+                            st.session_state.logged_in = True
+                            ensure_session_defaults()
+                            st.rerun()
                     except Exception as _e:
                         st.error(f"{T('err_register_fail')} ({_e})")
         st.markdown('</div>', unsafe_allow_html=True)
@@ -210,7 +213,11 @@ else:
             st.session_state.logged_in = False
             st.rerun()
 
-        can_reboot = st.session_state.mode is not None or st.session_state.mission_active or st.session_state.waiting_for_proof
+        can_reboot = (
+            st.session_state.get("mode") is not None
+            or st.session_state.get("mission_active", False)
+            or st.session_state.get("waiting_for_proof", False)
+        )
         if st.button(T("btn_reboot"), type="secondary", disabled=not can_reboot):
             st.session_state.mode = None
             st.session_state.mission_active = False
@@ -273,7 +280,7 @@ else:
         st.markdown('</div>', unsafe_allow_html=True)
 
     # 2. CONTRAT ACTIF
-    elif st.session_state.mission_active:
+    elif st.session_state.get("mission_active", False):
         diff_info = st.session_state.get("mission_difficulty", {"key": "moyen", "xp": 20})
         diff_color = {"facile": "#00ff00", "easy": "#00ff00", "moyen": "#ffb700", "medium": "#ffb700", "difficile": "#ff4d6d", "hard": "#ff4d6d"}.get(diff_info.get("key", "moyen"), "#ffb700")
         st.markdown(f'''
@@ -284,13 +291,14 @@ else:
             </div>
         ''', unsafe_allow_html=True)
 
-        if not st.session_state.waiting_for_proof:
+        if not st.session_state.get("waiting_for_proof", False):
             if st.button(T("btn_send_proof"), type="primary"):
                 st.session_state.waiting_for_proof = True
                 st.rerun()
         else:
-            st.info(f"{T('proof_analyser_label')} : {st.session_state.mode.upper()}")
-            proof = st.camera_input("CAPTURE") if st.session_state.mode == "camera" else st.file_uploader("FICHIER")
+            current_mode = st.session_state.get("mode")
+            st.info(f"{T('proof_analyser_label')} : {(current_mode or '').upper()}")
+            proof = st.camera_input("CAPTURE") if current_mode == "camera" else st.file_uploader("FICHIER")
 
             if proof:
                 img_p = Image.open(proof)
