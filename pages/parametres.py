@@ -27,7 +27,7 @@ if not st.session_state.get("logged_in", False):
 
 st.markdown(f'<h1 class="main-title">{T("settings_title")}</h1>', unsafe_allow_html=True)
 st.markdown(
-    f"<p style='font-family:monospace; color:#ffffff; text-align:center; margin-top:-10px;'>{T('settings_subtitle')}</p>",
+    f"<p style='font-family:monospace; color:#ffffff; text-align:center; margin-top:14px; margin-bottom:22px; line-height:1.5;'>{T('settings_subtitle')}</p>",
     unsafe_allow_html=True,
 )
 
