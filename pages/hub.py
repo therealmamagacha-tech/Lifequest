@@ -26,7 +26,7 @@ def load_dotenv_file(path=".env"):
 
 # --- CONFIGURATION IA ---
 load_dotenv_file()
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or st.secrets.get("GEMINI_API_KEY")
 model = None
 
 if GEMINI_API_KEY:
@@ -49,8 +49,26 @@ ensure_ui_defaults(st.session_state)
 inject_ui_overrides(st.session_state)
 
 # --- INITIALISATION SESSION ---
-if 'logged_in' not in st.session_state:
-    st.session_state.logged_in = False
+SESSION_DEFAULTS = {
+    "logged_in": False,
+    "password": "",
+    "xp": 0,
+    "lvl": 1,
+    "mode": None,
+    "mission_active": False,
+    "mission_text": "",
+    "history": [],
+    "streak": 0,
+    "last_mission_date": None,
+    "palmares": [],
+    "badges": [],
+    "mission_difficulty": {"key": "moyen", "xp": 20},
+    "waiting_for_proof": False,
+}
+
+for key, value in SESSION_DEFAULTS.items():
+    if key not in st.session_state:
+        st.session_state[key] = value.copy() if isinstance(value, (list, dict)) else value
 
 def get_image_hash(img):
     return hashlib.md5(img.tobytes()).hexdigest()
