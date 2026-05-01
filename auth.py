@@ -22,14 +22,28 @@ SALT = b"lifequest_salt_2026"
 
 def _firebase_url():
     """Retourne l'URL de base Firebase ou None si non configuré."""
+    raw_url = ""
     try:
         import streamlit as st
-        url = st.secrets.get("FIREBASE_URL", "")
-        if url:
-            return url.rstrip("/")
+        raw_url = st.secrets.get("FIREBASE_URL", "")
     except Exception:
         pass
-    return os.getenv("FIREBASE_URL", "").rstrip("/") or None
+    if not raw_url:
+        raw_url = os.getenv("FIREBASE_URL", "")
+
+    url = (raw_url or "").strip().rstrip("/")
+    if not url:
+        return None
+
+    # URL fréquente mais invalide: lien de console Firebase au lieu de la DB.
+    if "console.firebase.google.com" in url:
+        return None
+
+    # Realtime Database expose un endpoint API en *.firebaseio.com ou *.firebasedatabase.app
+    if not ("firebaseio.com" in url or "firebasedatabase.app" in url):
+        return None
+
+    return url
 
 def _use_firebase():
     return _HAS_REQUESTS and bool(_firebase_url())
