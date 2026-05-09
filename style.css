@@ -687,3 +687,104 @@ div[data-testid="stToggle"] p {
 [data-testid="stSidebarNav"] ul li a span {
     color: inherit !important;
 }
+
+/* =============================================
+   MOBILE — Performance & Layout
+   ============================================= */
+
+@media (max-width: 768px) {
+    /* Titre principal : taille aggressive sur très petits écrans */
+    .main-title {
+        font-size: clamp(1.1rem, 8vw, 2.2rem) !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    /* Manual frame : retire le clip-path sur mobile (peut bloquer les taps) */
+    .manual-frame,
+    .login-frame {
+        clip-path: none !important;
+        border-radius: 10px !important;
+        padding: 1rem !important;
+        margin: 0.5rem auto !important;
+    }
+
+    /* Level card sans clip-path */
+    .level-card {
+        clip-path: none !important;
+        border-radius: 10px !important;
+    }
+
+    /* Boutons plus grands pour les doigts */
+    div.stButton > button {
+        min-height: 3rem !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* Colonnes côte à côte sur mobile : stacker en colonne */
+    /* Streamlit ne permet pas de forcer ça via CSS pur pour les st.columns, 
+       mais on peut réduire les gaps et paddings */
+    [data-testid="column"] {
+        min-width: 0 !important;
+    }
+
+    /* Mission box : texte lisible */
+    .mission-box {
+        font-size: 0.85rem !important;
+        padding: 0.85rem !important;
+    }
+
+    /* Stats badge plus compact */
+    .stat-badge__val {
+        font-size: 1.5rem !important;
+    }
+
+    /* Palmarès entries */
+    .palmares-entry__name {
+        font-size: 0.75rem !important;
+    }
+
+    /* Réduction de l'effet hover image sur mobile (touch) */
+    [data-testid="stImage"]:hover img {
+        transform: none !important;
+    }
+}
+
+/* Respect du paramètre système "réduire les animations" */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    .stApp {
+        animation: none !important;
+    }
+}
+
+/* =============================================
+   BANDEAU IA — badge Gemini
+   ============================================= */
+.ai-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border: 1px solid rgba(0, 242, 255, 0.45);
+    border-radius: 20px;
+    background: rgba(0, 242, 255, 0.07);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: #00f2ff !important;
+    letter-spacing: 0.8px;
+}
+.ai-badge--active {
+    border-color: #00ff9d;
+    color: #00ff9d !important;
+    background: rgba(0, 255, 157, 0.07);
+    box-shadow: 0 0 8px rgba(0, 255, 157, 0.25);
+}
+.ai-badge--offline {
+    border-color: #ff4d6d;
+    color: #ff4d6d !important;
+    background: rgba(255, 77, 109, 0.07);
+}

@@ -21,7 +21,7 @@ inject_ui_overrides(st.session_state)
 # On récupère le perso choisi dans les archives. Si rien, on met des valeurs de base.
 agent_nom = st.session_state.get('active_agent')
 agent_puissance = st.session_state.get('active_puissance', 10)
-agent_img = st.session_state.get('active_img', "https://via.placeholder.com/120x120/03141d/00f2ff?text=NO_AGENT")
+agent_img = st.session_state.get('active_img', None)
 display_agent_name = agent_nom or T("no_agent")
 
 st.markdown(f'<h1 class="main-title" style="font-size:clamp(1.2rem,5vw,2.5rem); word-break:break-word;">{T("contract_title")}</h1>', unsafe_allow_html=True)
@@ -33,8 +33,8 @@ with col1:
     # Rappel de l'agent actif dans une login-frame
     has_agent = bool(agent_nom)
     agent_visual = f'<img src="{agent_img}" style="width:80px; image-rendering:pixelated;">'\
-        if has_agent else \
-        '<div style="width:80px;height:80px;margin:auto;border:2px dashed #00f2ff;border-radius:8px;display:flex;align-items:center;justify-content:center;"><span style=\"color:#00f2ff;font-size:1.5rem;\">?</span></div>'
+        if (has_agent and agent_img) else \
+        '<div style="width:80px;height:80px;margin:auto;border:2px dashed #00f2ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#00f2ff;">?</div>'
     st.markdown(f'''
         <div class="login-frame panel-shell" style="text-align:center;">
             <p style="color:#00f2ff; font-size:0.8rem;">{T("contract_unit_deployed")}</p>

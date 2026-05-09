@@ -36,6 +36,22 @@ if GEMINI_API_KEY:
 if not GEMINI_API_KEY:
     st.warning(T("warn_missing_gemini_key"))
 
+# Indicateur de statut IA (visible dès le chargement)
+if model is not None:
+    st.markdown(
+        '<div style="text-align:right; margin-bottom:0.25rem;">'
+        '<span class="ai-badge ai-badge--active">&#9679; GEMINI 2.5 FLASH — IA ONLINE</span>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+else:
+    st.markdown(
+        '<div style="text-align:right; margin-bottom:0.25rem;">'
+        '<span class="ai-badge ai-badge--offline">&#9679; IA OFFLINE</span>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
 # Injection du CSS
 try:
     with open("style.css", "r") as f:
